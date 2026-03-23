@@ -47,6 +47,6 @@ jobs:
         run: mvn clean verify -X
         env:
           # Injecter les secrets comme variables Spring Boot
-          SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${{ secrets.POSTGRES_DB }}
-          SPRING_DATASOURCE_USERNAME: ${{ secrets.POSTGRES_USER }}
-          SPRING_DATASOURCE_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          SPRING_DATASOURCE_URL: ${{ secrets.URL_DB }}
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.USERNAME_DB }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.PASSWORD_DB }}
