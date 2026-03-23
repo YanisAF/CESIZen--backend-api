@@ -1,0 +1,41 @@
+services:
+  cesi-backend-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cesi-backend-api
+    ports:
+      - "8080:8080"  # hôte:container
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: ${url_db}
+      SPRING_DATASOURCE_USERNAME: ${username_db}
+      SPRING_DATASOURCE_PASSWORD: ${password_db}
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+
+  postgres:
+    image: postgres:15
+    container_name: postgres_cesizen
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  app-network:
+
+
+# docker-compose up -d --build
