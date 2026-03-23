@@ -42,7 +42,7 @@ jobs:
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
 
-      # Compiler et tester l'application Spring Boot
+      # Compile and teste Spring Boot application
       - name: Compiler et exécuter les tests Maven
         run: mvn clean verify -X
         env:
