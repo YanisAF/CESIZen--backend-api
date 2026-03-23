@@ -11,13 +11,13 @@ jobs:
       postgres:
         image: postgres:15
         env:
-          POSTGRES_USER: ${POSTGRES_USER}
-          POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-          POSTGRES_DB: ${POSTGRES_DB}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
         ports:
           - 5432:5432
         options: >-
-          --health-cmd="pg_isready -U ${POSTGRES_USER}"
+          --health-cmd="pg_isready -U ${{ secrets.POSTGRES_USER }}"
           --health-interval=5s
           --health-timeout=5s
           --health-retries=5
@@ -35,7 +35,7 @@ jobs:
 
       - name: Compiler et exécuter les tests Maven
         env:
-          SPRING_DATASOURCE_URL: ${url_db}
-          SPRING_DATASOURCE_USERNAME: ${username_db}
-          SPRING_DATASOURCE_PASSWORD: ${password_db}
+          SPRING_DATASOURCE_URL: ${{ secrets.URL_DB }}
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.USERNAME_DB }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.PASSWORD_DB }}
         run: mvn clean verify -X
