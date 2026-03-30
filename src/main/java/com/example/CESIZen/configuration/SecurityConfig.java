@@ -49,7 +49,17 @@ public class SecurityConfig {
                                         "/api/v1/auth/**",
                                         "/swagger-ui/**",
                                         "/swagger-ui.html",
-                                        "/v3/api-docs/**"
+                                        "/v3/api-docs/**",
+                                        "/api/v1/request-password",
+                                        "/api/v1/verify-pin",
+                                        "/api/v1/reset-password",
+                                        "/api/v1/page/get-page",
+                                        "/api/v1/page/get-all-pages",
+                                        "/api/v1/get-quiz-by-id",
+                                        "/api/v1/quiz-list",
+                                        "/api/v1/submit",
+                                        "/api/v1/categories",
+                                        "/api/v1/get-all-questions"
                                 ).permitAll()
                                 .anyRequest().authenticated())
                 .addFilterBefore(
