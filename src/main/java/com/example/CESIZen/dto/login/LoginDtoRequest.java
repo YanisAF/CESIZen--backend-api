@@ -1,4 +1,4 @@
-package com.example.CESIZen.dto;
+package com.example.CESIZen.dto.login;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
