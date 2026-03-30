@@ -16,6 +16,16 @@ public final class Routes {
     public static final String VERIFY_PIN = "/verify-pin";
     public static final String RESET_PASSWORD = "/reset-password";
 
+    public static final String PAGE = "/page";
+    public static final String CREATE_PAGE = PAGE + "/create-page";
+    public static final String GET_PAGE = PAGE + "/get-page";
+    public static final String GET_ALL_PAGE = PAGE + "/get-all-pages";
+    public static final String UPDATE_PAGE = PAGE + "/update-page";
+    public static final String DELETE_PAGE = PAGE + "/delete-page";
+
+    public static final String CATEGORY = "/categories";
+    public static final String CREATE_CATEGORY = CATEGORY + "/create-category";
+    public static final String CATEGORY_LIST = CATEGORY + "/list";
 
     public static final String BACKEND_CHECK = "/backend-up";
 
