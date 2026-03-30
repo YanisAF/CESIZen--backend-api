@@ -27,6 +27,22 @@ public final class Routes {
     public static final String CREATE_CATEGORY = CATEGORY + "/create-category";
     public static final String CATEGORY_LIST = CATEGORY + "/list";
 
+    public static final String CREATE_QUIZ = "/create-quiz";
+    public static final String GET_QUIZ = "/get-quiz-by-id";
+    public static final String GET_ALL_QUIZ = "/quiz-list";
+    public static final String UPDATE_QUIZ = "/update-quiz";
+    public static final String DELETE_QUIZ = "/delete-quiz";
+    public static final String ADD_QUESTION_QUIZ = "/add-question";
+    public static final String GET_ALL_QUESTIONS = "/get-all-questions";
+    public static final String DELETE_QUESTION_QUIZ = "/delete-question-quiz";
+    public static final String SUBMIT = "/submit";
+
+    public static final String RESULT_MESSAGE_CONFIG = "/result-message-config";
+    public static final String RESULT_MESSAGE_CREATE = RESULT_MESSAGE_CONFIG + "/create";
+    public static final String RESULT_MESSAGE_UPDATE = RESULT_MESSAGE_CONFIG + "/update";
+    public static final String RESULT_MESSAGE_GET_ALL = RESULT_MESSAGE_CONFIG + "/get-all";
+    public static final String RESULT_MESSAGE_DELETE = RESULT_MESSAGE_CONFIG + "/delete";
+
     public static final String BACKEND_CHECK = "/backend-up";
 
 }
