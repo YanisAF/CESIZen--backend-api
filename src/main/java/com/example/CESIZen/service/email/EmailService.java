@@ -28,7 +28,7 @@ public class EmailService {
         context.setVariable("expiration", "5 minutes");
 
         String html = templateEngine.process(
-                "reset-password-email",
+                "reset-password-mail",
                 context
         );
 
@@ -110,7 +110,7 @@ public class EmailService {
         context.setVariable("name", user.getUserName());
 
         String html = templateEngine.process(
-                "creation-confirmation-account",
+                "creation-account-confirmation",
                 context
         );
 
