@@ -110,7 +110,7 @@ public class EmailService {
         context.setVariable("name", user.getUserName());
 
         String html = templateEngine.process(
-                "creation-account-confirmation",
+                "confirmation-account-creation",
                 context
         );
 
