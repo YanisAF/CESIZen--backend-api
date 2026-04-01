@@ -117,7 +117,7 @@ Voici quelques exemples d'endpoints disponibles. La documentation complète est 
 
 *   **Enregistrement d'utilisateur** :
     *   `POST /api/v1/auth/register`
-    *   `POST /api/v1/auth/register/admin`
+    *   `POST /api/v1/auth/register-admin`
 *   **Connexion** :
     *   `POST /api/v1/auth/login`
 *   **Vérification de l'état du backend** :
