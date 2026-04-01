@@ -7,6 +7,7 @@ import com.example.CESIZen.enums.Roles;
 import com.example.CESIZen.exception.AllUserException;
 import com.example.CESIZen.mapper.UserMapper;
 import com.example.CESIZen.model.user.User;
+import com.example.CESIZen.repository.ResultDiagnosisRepository;
 import com.example.CESIZen.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,11 +20,15 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ResultDiagnosisRepository resultDiagnosisRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder,
+                       ResultDiagnosisRepository resultDiagnosisRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.resultDiagnosisRepository = resultDiagnosisRepository;
     }
 
     public UserDtoResponse register(UserDtoRequest userDtoRequest) throws AllUserException {
@@ -67,11 +72,9 @@ public class UserService {
         return newUser;
     }
 
-    private static boolean verifyPhoneNumber(UserDtoRequest userDtoRequest){
-        return (userDtoRequest.getPhone().isEmpty() || userDtoRequest.getPhone().isBlank());
-    }
-
     public UserDtoResponse createUser(UserDtoRequest userDtoRequest) throws AllUserException{
+        userDtoRequest.setEmail(userDtoRequest.getEmail().toLowerCase());
+        userDtoRequest.setUserName(userDtoRequest.getUserName().toLowerCase());
         User newUser = requestCreateUser(userDtoRequest, false);
         User userSaved = userRepository.save(newUser);
         return UserMapper.toDto(userSaved);
@@ -177,6 +180,7 @@ public class UserService {
                         "User not found",
                         "/api/users/profil"
                 ));
+        resultDiagnosisRepository.deleteAllByUserId(id);
         userRepository.deleteResetTokenByUserId(id);
         userRepository.deleteById(id);
     }

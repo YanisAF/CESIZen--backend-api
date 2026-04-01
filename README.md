@@ -34,13 +34,13 @@ Le projet utilise un fichier `application.yml` pour la configuration. Les inform
 
 Vous devrez définir les variables d'environnement suivantes :
 
-*   `url_db`: URL de connexion à la base de données PostgreSQL (ex: `jdbc:postgresql://localhost:5432/cesizen_db`).
-*   `username_db`: Nom d'utilisateur de la base de données.
-*   `password_db`: Mot de passe de la base de données.
+*   `DB_URL`: URL de connexion à la base de données PostgreSQL (ex: `jdbc:postgresql://localhost:5432/cesizen_db`).
+*   `USERNAME_DB`: Nom d'utilisateur de la base de données.
+*   `PASSWORD_DB`: Mot de passe de la base de données.
 *   `jwt_secret_key`: Clé secrète pour la signature des tokens JWT.
 *   `jwt_secret_reset`: Clé secrète pour la réinitialisation des mots de passe JWT.
-*   `mail_username`: Nom d'utilisateur pour l'envoi d'e-mails (ex: adresse Gmail).
-*   `mail_password`: Mot de passe de l'application pour l'envoi d'e-mails.
+*   `USERNAME_MAIL`: Nom d'utilisateur pour l'envoi d'e-mails (ex: adresse Gmail).
+*   `PASSWORD_MAIL`: Mot de passe de l'application pour l'envoi d'e-mails.
 *   `VAULT_HOST`, `VAULT_PORT`, `VAULT_SCHEME`, `VAULT_TOKEN`, `default_context_vault`: Variables liées à HashiCorp Vault si utilisé pour la gestion des secrets. Si non utilisé, ces variables peuvent être omises ou configurées différemment.
 
 Pour un environnement de développement local, vous pouvez créer un fichier `.env` ou définir ces variables directement dans votre shell.
@@ -84,13 +84,13 @@ Cette méthode est recommandée pour un environnement de développement complet,
     POSTGRES_DB=cesizendb
 
     # Variables pour l'API Spring Boot
-    url_db=jdbc:postgresql://postgres:5432/cesizendb
-    username_db=cesizenuser
-    password_db=cesizenpassword
+    DB_URL=jdbc:postgresql://postgres:5432/cesizendb
+    USERNAME_DB=cesizenuser
+    PASSWORD_DB=cesizenpassword
     jwt_secret_key=VotreCleSecreteJWT
     jwt_secret_reset=VotreCleSecreteResetJWT
-    mail_username=votre_email@gmail.com
-    mail_password=votre_mot_de_passe_application
+    USERNAME_MAIL=votre_email@gmail.com
+    PASSWORD_MAIL=votre_mot_de_passe_application
     # Variables Vault (si utilisées)
     # VAULT_HOST=...
     # VAULT_PORT=...
@@ -98,7 +98,7 @@ Cette méthode est recommandée pour un environnement de développement complet,
     # VAULT_TOKEN=...
     # default_context_vault=...
     ```
-    **Important**: Remplacez les valeurs par vos propres informations. Pour `mail_password`, utilisez un mot de passe d'application si vous utilisez Gmail avec l'authentification à deux facteurs.
+    **Important**: Remplacez les valeurs de `PASSWORD_MAIL`, utilisez un mot de passe d'application Gmail avec l'authentification à deux facteurs.
 
 3.  **Construire et démarrer les services Docker** :
     ```bash
@@ -117,11 +117,11 @@ Voici quelques exemples d'endpoints disponibles. La documentation complète est 
 
 *   **Enregistrement d'utilisateur** :
     *   `POST /api/v1/auth/register`
-    *   `POST /api/v1/auth/register/admin`
+    *   `POST /api/v1/auth/register-admin`
 *   **Connexion** :
     *   `POST /api/v1/auth/login`
 *   **Vérification de l'état du backend** :
-    *   `GET /api/v1/auth/backend-check`
+    *   `GET /api/v1/auth/backend-up`
 
 La documentation interactive de l'API (Swagger UI) sera disponible à l'adresse `http://localhost:8080/swagger-ui.html` une fois l'API démarrée.
 
@@ -134,7 +134,7 @@ CESIZen--backend-api/
 ├── src/
 │   ├── main/
 │   │   ├── java/com/example/CESIZen/
-│   │   │   ├── controller/       # Contrôleurs REST
+│   │   │   ├── controller/     # Contrôleurs REST
 │   │   │   ├── service/        # Logique métier
 │   │   │   ├── repository/     # Accès aux données (JPA)
 │   │   │   ├── model/          # Entités de la base de données

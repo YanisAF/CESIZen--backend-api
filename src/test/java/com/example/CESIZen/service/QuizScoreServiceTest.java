@@ -7,9 +7,11 @@ import com.example.CESIZen.model.quiz.Question;
 import com.example.CESIZen.model.quiz.Quiz;
 import com.example.CESIZen.model.quiz.ResultDiagnosis;
 import com.example.CESIZen.model.quiz.ResultMessageConfig;
+import com.example.CESIZen.model.user.User;
 import com.example.CESIZen.repository.QuizRepository;
 import com.example.CESIZen.repository.ResultDiagnosisRepository;
 import com.example.CESIZen.repository.ResultMessageConfigRepository;
+import com.example.CESIZen.repository.UserRepository;
 import com.example.CESIZen.service.quiz.QuizScoreService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,6 +43,9 @@ class QuizScoreServiceTest {
     @Mock
     private ResultMessageConfigRepository resultMessageConfigRepository;
 
+    @Mock
+    private UserRepository userRepository;
+
     @InjectMocks
     private QuizScoreService quizScoreService;
 
@@ -48,7 +53,8 @@ class QuizScoreServiceTest {
     private Question question1;
     private Question question2;
     private ResultMessageConfig lowConfig;
-    private ResultDiagnosis savedDiagnosis;
+    private ResultMessageConfig highConfig;
+    private User user;
 
     @BeforeEach
     void setUp() {
@@ -70,17 +76,22 @@ class QuizScoreServiceTest {
         lowConfig = new ResultMessageConfig();
         lowConfig.setId(1L);
         lowConfig.setMinScore(0);
-        lowConfig.setMaxScore(10);
+        lowConfig.setMaxScore(4);
         lowConfig.setRiskLevel("Faible");
         lowConfig.setMessage("Votre niveau de stress est faible.");
         lowConfig.setQuiz(quiz);
 
-        savedDiagnosis = new ResultDiagnosis();
-        savedDiagnosis.setId(1);
-        savedDiagnosis.setTotalScore(3);
-        savedDiagnosis.setRiskLevel("Faible");
-        savedDiagnosis.setMessage("Votre niveau de stress est faible.");
-        savedDiagnosis.setQuiz(quiz);
+        highConfig = new ResultMessageConfig();
+        highConfig.setId(2L);
+        highConfig.setMinScore(5);
+        highConfig.setMaxScore(20);
+        highConfig.setRiskLevel("Élevé");
+        highConfig.setMessage("Votre niveau de stress est élevé.");
+        highConfig.setQuiz(quiz);
+
+        user = new User();
+        user.setId(1L);
+        user.setUserName("john.doe");
     }
 
     // ══════════════════════════════════════════════════════════════════════════
@@ -97,7 +108,6 @@ class QuizScoreServiceTest {
         when(resultMessageConfigRepository
                 .findByQuizIdAndMinScoreLessThanEqualAndMaxScoreGreaterThanEqual(eq(1), eq(3), eq(3)))
                 .thenReturn(Optional.of(lowConfig));
-        when(resultDiagnosisRepository.save(any(ResultDiagnosis.class))).thenReturn(savedDiagnosis);
 
         ResultDtoResponse result = quizScoreService.calculateScore(1, submission);
 
@@ -105,6 +115,8 @@ class QuizScoreServiceTest {
         assertThat(result.getTotalScore()).isEqualTo(3);
         assertThat(result.getRiskLevel()).isEqualTo("Faible");
         assertThat(result.getMessage()).isEqualTo("Votre niveau de stress est faible.");
+        // calculateScore() ne persiste pas en base
+        verifyNoInteractions(resultDiagnosisRepository);
     }
 
     @Test
@@ -113,30 +125,15 @@ class QuizScoreServiceTest {
         QuizSubmissionDto submission = new QuizSubmissionDto();
         submission.setAnswers(Map.of(1, false, 2, false));
 
-        ResultMessageConfig zeroConfig = new ResultMessageConfig();
-        zeroConfig.setId(2L);
-        zeroConfig.setMinScore(0);
-        zeroConfig.setMaxScore(0);
-        zeroConfig.setRiskLevel("Nul");
-        zeroConfig.setMessage("Aucun stress détecté.");
-        zeroConfig.setQuiz(quiz);
-
-        ResultDiagnosis zeroDiagnosis = new ResultDiagnosis();
-        zeroDiagnosis.setId(2);
-        zeroDiagnosis.setTotalScore(0);
-        zeroDiagnosis.setRiskLevel("Nul");
-        zeroDiagnosis.setMessage("Aucun stress détecté.");
-        zeroDiagnosis.setQuiz(quiz);
-
         when(quizRepository.findById(1)).thenReturn(Optional.of(quiz));
         when(resultMessageConfigRepository
                 .findByQuizIdAndMinScoreLessThanEqualAndMaxScoreGreaterThanEqual(eq(1), eq(0), eq(0)))
-                .thenReturn(Optional.of(zeroConfig));
-        when(resultDiagnosisRepository.save(any(ResultDiagnosis.class))).thenReturn(zeroDiagnosis);
+                .thenReturn(Optional.of(lowConfig));
 
         ResultDtoResponse result = quizScoreService.calculateScore(1, submission);
 
         assertThat(result.getTotalScore()).isEqualTo(0);
+        verifyNoInteractions(resultDiagnosisRepository);
     }
 
     @Test
@@ -145,31 +142,16 @@ class QuizScoreServiceTest {
         QuizSubmissionDto submission = new QuizSubmissionDto();
         submission.setAnswers(Map.of(1, true, 2, true));
 
-        ResultMessageConfig highConfig = new ResultMessageConfig();
-        highConfig.setId(3L);
-        highConfig.setMinScore(5);
-        highConfig.setMaxScore(20);
-        highConfig.setRiskLevel("Élevé");
-        highConfig.setMessage("Votre niveau de stress est élevé.");
-        highConfig.setQuiz(quiz);
-
-        ResultDiagnosis highDiagnosis = new ResultDiagnosis();
-        highDiagnosis.setId(3);
-        highDiagnosis.setTotalScore(7);
-        highDiagnosis.setRiskLevel("Élevé");
-        highDiagnosis.setMessage("Votre niveau de stress est élevé.");
-        highDiagnosis.setQuiz(quiz);
-
         when(quizRepository.findById(1)).thenReturn(Optional.of(quiz));
         when(resultMessageConfigRepository
                 .findByQuizIdAndMinScoreLessThanEqualAndMaxScoreGreaterThanEqual(eq(1), eq(7), eq(7)))
                 .thenReturn(Optional.of(highConfig));
-        when(resultDiagnosisRepository.save(any(ResultDiagnosis.class))).thenReturn(highDiagnosis);
 
         ResultDtoResponse result = quizScoreService.calculateScore(1, submission);
 
         assertThat(result.getTotalScore()).isEqualTo(7);
         assertThat(result.getRiskLevel()).isEqualTo("Élevé");
+        verifyNoInteractions(resultDiagnosisRepository);
     }
 
     @Test
@@ -194,13 +176,13 @@ class QuizScoreServiceTest {
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> quizScoreService.calculateScore(1, submission))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("No message config");
     }
 
     @Test
-    @DisplayName("SCR-06 | calculateScore() - Réponse persistée en base")
-    void calculateScore_shouldSaveResult() throws ResourceNotFoundException {
+    @DisplayName("SCR-06 | calculateScore() - Retourne un ResultDtoResponse sans ID ni userId")
+    void calculateScore_shouldReturnDtoWithNullIdAndNullUserId() throws ResourceNotFoundException {
         QuizSubmissionDto submission = new QuizSubmissionDto();
         submission.setAnswers(Map.of(1, true, 2, false));
 
@@ -208,10 +190,138 @@ class QuizScoreServiceTest {
         when(resultMessageConfigRepository
                 .findByQuizIdAndMinScoreLessThanEqualAndMaxScoreGreaterThanEqual(eq(1), eq(3), eq(3)))
                 .thenReturn(Optional.of(lowConfig));
+
+        ResultDtoResponse result = quizScoreService.calculateScore(1, submission);
+
+        assertThat(result.getId()).isNull();
+        assertThat(result.getUserId()).isNull();
+        assertThat(result.getQuizId()).isEqualTo(1);
+    }
+
+    // ══════════════════════════════════════════════════════════════════════════
+    //  saveResult()
+    // ══════════════════════════════════════════════════════════════════════════
+
+    @Test
+    @DisplayName("SAV-01 | saveResult() - Succès : résultat sauvegardé et retourné")
+    void saveResult_shouldSaveAndReturnResult() throws ResourceNotFoundException {
+        QuizSubmissionDto submission = new QuizSubmissionDto();
+        submission.setAnswers(Map.of(1, true, 2, false));
+
+        ResultDiagnosis savedDiagnosis = new ResultDiagnosis();
+        savedDiagnosis.setId(10);
+        savedDiagnosis.setTotalScore(3);
+        savedDiagnosis.setRiskLevel("Faible");
+        savedDiagnosis.setMessage("Votre niveau de stress est faible.");
+        savedDiagnosis.setQuiz(quiz);
+        savedDiagnosis.setUser(user);
+
+        when(quizRepository.findById(1)).thenReturn(Optional.of(quiz));
+        when(userRepository.findByUserName("john.doe")).thenReturn(user);
+        when(resultMessageConfigRepository
+                .findByQuizIdAndMinScoreLessThanEqualAndMaxScoreGreaterThanEqual(eq(1), eq(3), eq(3)))
+                .thenReturn(Optional.of(lowConfig));
         when(resultDiagnosisRepository.save(any(ResultDiagnosis.class))).thenReturn(savedDiagnosis);
 
-        quizScoreService.calculateScore(1, submission);
+        ResultDtoResponse result = quizScoreService.saveResult(1, "john.doe", submission);
 
-        verify(resultDiagnosisRepository).save(any(ResultDiagnosis.class));
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(10);
+        assertThat(result.getTotalScore()).isEqualTo(3);
+        assertThat(result.getRiskLevel()).isEqualTo("Faible");
+        assertThat(result.getMessage()).isEqualTo("Votre niveau de stress est faible.");
+        assertThat(result.getQuizId()).isEqualTo(1);
+        assertThat(result.getUserId()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("SAV-02 | saveResult() - Succès : résultat bien persisté en base")
+    void saveResult_shouldCallRepositorySave() throws ResourceNotFoundException {
+        QuizSubmissionDto submission = new QuizSubmissionDto();
+        submission.setAnswers(Map.of(1, true, 2, false));
+
+        ResultDiagnosis savedDiagnosis = new ResultDiagnosis();
+        savedDiagnosis.setId(10);
+        savedDiagnosis.setTotalScore(3);
+        savedDiagnosis.setRiskLevel("Faible");
+        savedDiagnosis.setMessage("Votre niveau de stress est faible.");
+        savedDiagnosis.setQuiz(quiz);
+        savedDiagnosis.setUser(user);
+
+        when(quizRepository.findById(1)).thenReturn(Optional.of(quiz));
+        when(userRepository.findByUserName("john.doe")).thenReturn(user);
+        when(resultMessageConfigRepository
+                .findByQuizIdAndMinScoreLessThanEqualAndMaxScoreGreaterThanEqual(eq(1), eq(3), eq(3)))
+                .thenReturn(Optional.of(lowConfig));
+        when(resultDiagnosisRepository.save(any(ResultDiagnosis.class))).thenReturn(savedDiagnosis);
+
+        quizScoreService.saveResult(1, "john.doe", submission);
+
+        verify(resultDiagnosisRepository, times(1)).save(any(ResultDiagnosis.class));
+    }
+
+    @Test
+    @DisplayName("SAV-03 | saveResult() - Succès : score maximum sauvegardé")
+    void saveResult_shouldSaveMaxScore_whenAllTrue() throws ResourceNotFoundException {
+        QuizSubmissionDto submission = new QuizSubmissionDto();
+        submission.setAnswers(Map.of(1, true, 2, true));
+
+        ResultDiagnosis savedDiagnosis = new ResultDiagnosis();
+        savedDiagnosis.setId(11);
+        savedDiagnosis.setTotalScore(7);
+        savedDiagnosis.setRiskLevel("Élevé");
+        savedDiagnosis.setMessage("Votre niveau de stress est élevé.");
+        savedDiagnosis.setQuiz(quiz);
+        savedDiagnosis.setUser(user);
+
+        when(quizRepository.findById(1)).thenReturn(Optional.of(quiz));
+        when(userRepository.findByUserName("john.doe")).thenReturn(user);
+        when(resultMessageConfigRepository
+                .findByQuizIdAndMinScoreLessThanEqualAndMaxScoreGreaterThanEqual(eq(1), eq(7), eq(7)))
+                .thenReturn(Optional.of(highConfig));
+        when(resultDiagnosisRepository.save(any(ResultDiagnosis.class))).thenReturn(savedDiagnosis);
+
+        ResultDtoResponse result = quizScoreService.saveResult(1, "john.doe", submission);
+
+        assertThat(result.getTotalScore()).isEqualTo(7);
+        assertThat(result.getRiskLevel()).isEqualTo("Élevé");
+    }
+
+    @Test
+    @DisplayName("SAV-04 | saveResult() - Échec : quiz introuvable")
+    void saveResult_shouldThrow_whenQuizNotFound() {
+        when(quizRepository.findById(99)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> quizScoreService.saveResult(99, "john.doe", new QuizSubmissionDto()))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("Quiz not found");
+    }
+
+    @Test
+    @DisplayName("SAV-05 | saveResult() - Échec : utilisateur introuvable")
+    void saveResult_shouldThrow_whenUserNotFound() {
+        when(quizRepository.findById(1)).thenReturn(Optional.of(quiz));
+        when(userRepository.findByUserName("unknown")).thenReturn(null);
+
+        assertThatThrownBy(() -> quizScoreService.saveResult(1, "unknown", new QuizSubmissionDto()))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("User not found");
+    }
+
+    @Test
+    @DisplayName("SAV-06 | saveResult() - Échec : aucun config de message pour ce score")
+    void saveResult_shouldThrow_whenNoMessageConfig() {
+        QuizSubmissionDto submission = new QuizSubmissionDto();
+        submission.setAnswers(Map.of(1, true, 2, false));
+
+        when(quizRepository.findById(1)).thenReturn(Optional.of(quiz));
+        when(userRepository.findByUserName("john.doe")).thenReturn(user);
+        when(resultMessageConfigRepository
+                .findByQuizIdAndMinScoreLessThanEqualAndMaxScoreGreaterThanEqual(anyInt(), anyInt(), anyInt()))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> quizScoreService.saveResult(1, "john.doe", submission))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("No message config");
     }
 }

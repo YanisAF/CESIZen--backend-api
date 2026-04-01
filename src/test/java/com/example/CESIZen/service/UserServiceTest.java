@@ -6,6 +6,7 @@ import com.example.CESIZen.dto.user.UserPatchRequest;
 import com.example.CESIZen.enums.Roles;
 import com.example.CESIZen.exception.AllUserException;
 import com.example.CESIZen.model.user.User;
+import com.example.CESIZen.repository.ResultDiagnosisRepository;
 import com.example.CESIZen.repository.UserRepository;
 import com.example.CESIZen.service.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +35,9 @@ class UserServiceTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    ResultDiagnosisRepository resultDiagnosisRepository;
 
     @InjectMocks
     private UserService userService;
@@ -321,6 +325,7 @@ class UserServiceTest {
     @DisplayName("USR-16 | deleteUserById() - Succès : suppression effective")
     void deleteUserById_shouldDeleteUser_whenFound() throws AllUserException {
         when(userRepository.findById(1L)).thenReturn(Optional.of(savedUser));
+        doNothing().when(resultDiagnosisRepository).deleteAllByUserId(1L);
         doNothing().when(userRepository).deleteResetTokenByUserId(1L);
         doNothing().when(userRepository).deleteById(1L);
 

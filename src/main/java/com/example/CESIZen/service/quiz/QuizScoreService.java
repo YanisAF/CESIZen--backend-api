@@ -7,9 +7,11 @@ import com.example.CESIZen.model.quiz.Question;
 import com.example.CESIZen.model.quiz.Quiz;
 import com.example.CESIZen.model.quiz.ResultDiagnosis;
 import com.example.CESIZen.model.quiz.ResultMessageConfig;
+import com.example.CESIZen.model.user.User;
 import com.example.CESIZen.repository.QuizRepository;
 import com.example.CESIZen.repository.ResultDiagnosisRepository;
 import com.example.CESIZen.repository.ResultMessageConfigRepository;
+import com.example.CESIZen.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,15 +20,18 @@ import java.time.LocalDateTime;
 public class QuizScoreService {
 
     private final QuizRepository quizRepository;
+    private final UserRepository userRepository;
     private final ResultDiagnosisRepository repository;
     private final ResultMessageConfigRepository resultMessageConfigRepository;
 
     public QuizScoreService(QuizRepository quizRepository,
                             ResultDiagnosisRepository repository,
-                            ResultMessageConfigRepository resultMessageConfigRepository) {
+                            ResultMessageConfigRepository resultMessageConfigRepository,
+                            UserRepository userRepository) {
         this.quizRepository = quizRepository;
         this.repository = repository;
         this.resultMessageConfigRepository = resultMessageConfigRepository;
+        this.userRepository = userRepository;
     }
 
     public ResultDtoResponse calculateScore(Integer quizId, QuizSubmissionDto submission) throws ResourceNotFoundException{
@@ -41,16 +46,43 @@ public class QuizScoreService {
 
         ResultMessageConfig config = resultMessageConfigRepository
                 .findByQuizIdAndMinScoreLessThanEqualAndMaxScoreGreaterThanEqual(quizId, score, score)
-                .orElseThrow(() -> new RuntimeException("No message config for this score"));
+                .orElseThrow(() -> new ResourceNotFoundException("No message config for this score"));
 
-        String riskLevel = config.getRiskLevel();
-        String message = config.getMessage();
+        return new ResultDtoResponse(
+                null,
+                score,
+                config.getMessage(),
+                config.getRiskLevel(),
+                quizId,
+                null
+        );
+    }
+
+    public ResultDtoResponse saveResult(Integer quizId, String username, QuizSubmissionDto submission) throws ResourceNotFoundException {
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new ResourceNotFoundException("Quiz not found"));
+
+        User user = userRepository.findByUserName(username);
+        if (user == null) {
+            throw new ResourceNotFoundException("User not found");
+        }
+
+        int score = quiz.getQuestionList()
+                .stream()
+                .filter(q -> Boolean.TRUE.equals(submission.getAnswers().get(q.getId())))
+                .mapToInt(Question::getScoreValue)
+                .sum();
+
+        ResultMessageConfig config = resultMessageConfigRepository
+                .findByQuizIdAndMinScoreLessThanEqualAndMaxScoreGreaterThanEqual(quizId, score, score)
+                .orElseThrow(() -> new ResourceNotFoundException("No message config for this score"));
 
         ResultDiagnosis result = new ResultDiagnosis();
         result.setQuiz(quiz);
+        result.setUser(user);
         result.setTotalScore(score);
-        result.setRiskLevel(riskLevel);
-        result.setMessage(message);
+        result.setRiskLevel(config.getRiskLevel());
+        result.setMessage(config.getMessage());
         result.setCreatedAt(LocalDateTime.now());
 
         ResultDiagnosis savedResult = repository.save(result);

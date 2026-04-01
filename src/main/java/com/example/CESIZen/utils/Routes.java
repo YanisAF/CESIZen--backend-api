@@ -5,9 +5,11 @@ public final class Routes {
     public static final String LOGIN = "/login";
     public static final String REGISTER = "/register";
     public static final String REGISTER_ADMIN = "/register-admin";
+    public static final String ROLE_ADMIN = "/admin";
 
     public static final String CREATE_USER = "/create-user";
     public static final String USER_PROFIL = "/profil";
+    public static final String UPDATE_USER_PROFIL = "/update-profil";
     public static final String USER_LIST = "/users-list";
     public static final String FILTER_USER_ROLE_LIST = "/filter-users-list";
     public static final String DELETE_USER = "/delete";
@@ -36,6 +38,8 @@ public final class Routes {
     public static final String GET_ALL_QUESTIONS = "/get-all-questions";
     public static final String DELETE_QUESTION_QUIZ = "/delete-question-quiz";
     public static final String SUBMIT = "/submit";
+    public static final String SAVE_RESULT = "/save-result";
+    public static final String GET_ALL_HISTORY_QUIZ = "/get-history-quiz";
 
     public static final String RESULT_MESSAGE_CONFIG = "/result-message-config";
     public static final String RESULT_MESSAGE_CREATE = RESULT_MESSAGE_CONFIG + "/create";

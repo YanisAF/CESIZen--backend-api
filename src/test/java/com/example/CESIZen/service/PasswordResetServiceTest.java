@@ -1,5 +1,6 @@
 package com.example.CESIZen.service;
 
+import com.example.CESIZen.exception.ResourceNotFoundException;
 import com.example.CESIZen.model.reset.PasswordResetToken;
 import com.example.CESIZen.model.user.User;
 import com.example.CESIZen.repository.PasswordResetTokenRepository;
@@ -108,7 +109,7 @@ class PasswordResetServiceTest {
 
     @Test
     @DisplayName("RST-04 | verifyPin() - Succès : PIN valide, JWT retourné")
-    void verifyPin_shouldReturnJwt_whenPinIsValid() {
+    void verifyPin_shouldReturnJwt_whenPinIsValid() throws ResourceNotFoundException{
         when(userRepository.findByEmailOrPhone("john.doe@example.com")).thenReturn(Optional.of(user));
         when(tokenRepository.findFirstByUserAndUsedFalseOrderByExpirationDesc(user))
                 .thenReturn(Optional.of(validToken));
@@ -130,7 +131,7 @@ class PasswordResetServiceTest {
         when(passwordEncoder.matches("000000", "$2a$10$encodedPin")).thenReturn(false);
 
         assertThatThrownBy(() -> passwordResetService.verifyPin("john.doe@example.com", "000000"))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("invalide");
 
         assertThat(validToken.getAttempts()).isEqualTo(1);
@@ -146,7 +147,7 @@ class PasswordResetServiceTest {
                 .thenReturn(Optional.of(validToken));
 
         assertThatThrownBy(() -> passwordResetService.verifyPin("john.doe@example.com", "123456"))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("expiré");
     }
 
@@ -160,7 +161,7 @@ class PasswordResetServiceTest {
                 .thenReturn(Optional.of(validToken));
 
         assertThatThrownBy(() -> passwordResetService.verifyPin("john.doe@example.com", "123456"))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("tentatives");
     }
 
@@ -172,7 +173,7 @@ class PasswordResetServiceTest {
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> passwordResetService.verifyPin("john.doe@example.com", "123456"))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("PIN actif");
     }
 
