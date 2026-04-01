@@ -1,5 +1,6 @@
 package com.example.CESIZen.service.reset;
 
+import com.example.CESIZen.exception.ResourceNotFoundException;
 import com.example.CESIZen.model.reset.PasswordResetToken;
 import com.example.CESIZen.model.user.User;
 import com.example.CESIZen.repository.PasswordResetTokenRepository;
@@ -37,10 +38,11 @@ public class PasswordResetService {
         this.jwtResetTokenService = jwtResetTokenService;
     }
 
-    public void requestReset(String identifier, String channel) throws Exception {
+    public void requestReset(String identifier, String channel) throws ResourceNotFoundException {
+        identifier = identifier.toLowerCase();
 
         User user = userRepository.findByEmailOrPhone(identifier)
-                .orElseThrow(() -> new Exception("Utilisateur introuvable"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable"));
 
         String rawPin = generatePin();
 
@@ -53,25 +55,26 @@ public class PasswordResetService {
         eventService.publisherResetEvent(user, rawPin, channel);
     }
 
-    public String verifyPin(String identifier, String pin) {
+    public String verifyPin(String identifier, String pin) throws ResourceNotFoundException {
+        identifier = identifier.toLowerCase();
 
         User user = userRepository.findByEmailOrPhone(identifier)
-                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable"));
 
         PasswordResetToken token = tokenRepository.findFirstByUserAndUsedFalseOrderByExpirationDesc(user)
-                .orElseThrow(() -> new RuntimeException("Aucun PIN actif"));
+                .orElseThrow(() -> new ResourceNotFoundException("Aucun PIN actif"));
 
         if (token.getExpiration().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("PIN expiré");
+            throw new ResourceNotFoundException("PIN expiré");
         }
 
         if (token.getAttempts() >= MAX_ATTEMPTS) {
-            throw new RuntimeException("Nombre maximal de tentatives atteint");
+            throw new ResourceNotFoundException("Nombre maximal de tentatives atteint");
         }
 
         if (!passwordEncoder.matches(pin, token.getPin())) {
             token.setAttempts(token.getAttempts() + 1);
-            throw new RuntimeException("PIN invalide");
+            throw new ResourceNotFoundException("PIN invalide");
         }
 
         token.setUsed(true);

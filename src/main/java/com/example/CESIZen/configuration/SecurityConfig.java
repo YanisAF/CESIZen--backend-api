@@ -58,7 +58,7 @@ public class SecurityConfig {
                                         "/api/v1/get-quiz-by-id",
                                         "/api/v1/quiz-list",
                                         "/api/v1/submit",
-                                        "/api/v1/categories",
+                                        "/api/v1/categories/list",
                                         "/api/v1/get-all-questions"
                                 ).permitAll()
                                 .anyRequest().authenticated())

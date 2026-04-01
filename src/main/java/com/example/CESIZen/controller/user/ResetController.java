@@ -4,6 +4,7 @@ import com.example.CESIZen.dto.reset.JwtDtoResponse;
 import com.example.CESIZen.dto.reset.ResetDtoRequest;
 import com.example.CESIZen.dto.reset.ResetPasswordRequestDto;
 import com.example.CESIZen.dto.reset.VerifyPinRequestDto;
+import com.example.CESIZen.exception.ResourceNotFoundException;
 import com.example.CESIZen.service.reset.PasswordResetService;
 import com.example.CESIZen.utils.Routes;
 import jakarta.validation.Valid;
@@ -27,7 +28,7 @@ public class ResetController {
     }
 
     @PostMapping(Routes.REQUEST_PASSWORD)
-    public ResponseEntity<?> requestReset(@Valid @RequestBody ResetDtoRequest request) throws Exception {
+    public ResponseEntity<?> requestReset(@Valid @RequestBody ResetDtoRequest request) throws ResourceNotFoundException {
         passwordResetService.requestReset(
                 request.getIdentifier(),
                 request.getChannel()
@@ -38,7 +39,7 @@ public class ResetController {
     }
 
     @PostMapping(Routes.VERIFY_PIN)
-    public ResponseEntity<?> verifyPin(@Valid @RequestBody VerifyPinRequestDto request) {
+    public ResponseEntity<?> verifyPin(@Valid @RequestBody VerifyPinRequestDto request) throws ResourceNotFoundException {
         String resetJwt = passwordResetService.verifyPin(
                 request.getIdentifier(),
                 request.getPin()
