@@ -40,6 +40,11 @@ public class AuthService {
 
     public Map<String, Object> loginManager(LoginDtoRequest loginDtoRequest, HttpServletRequest request) throws AllUserException{
         try{
+            loginDtoRequest.setIdentifier(
+                    loginDtoRequest.getIdentifier() != null
+                            ? loginDtoRequest.getIdentifier().toLowerCase()
+                            : null
+            );
             Map<String, Object> user = getLoginMap(loginDtoRequest, request);
             if (user != null) return user;
         } catch (AuthenticationException e) {
@@ -118,6 +123,11 @@ public class AuthService {
 
     public Map<String, Object> registerManager(LoginDtoRequest loginDtoRequest) throws AllUserException{
         try{
+            loginDtoRequest.setIdentifier(
+                    loginDtoRequest.getIdentifier() != null
+                            ? loginDtoRequest.getIdentifier().toLowerCase()
+                            : null
+            );
             Map<String, Object> user = getMapRegister(loginDtoRequest);
             if (user != null) return user;
         } catch (AuthenticationException e) {

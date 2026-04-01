@@ -65,7 +65,7 @@ public class UserController {
                 .body(userService.createUser(userDtoRequest));
     }
 
-    @PatchMapping
+    @PatchMapping(Routes.UPDATE_USER_PROFIL)
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<UserDtoResponse> patchOwnProfile(
             @RequestParam Long id,
@@ -88,7 +88,7 @@ public class UserController {
         return ResponseEntity.ok(updated);
     }
 
-    @PatchMapping("/admin")
+    @PatchMapping(Routes.ROLE_ADMIN)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<UserDtoResponse> patchUserByAdmin(
             @RequestParam Long id,
