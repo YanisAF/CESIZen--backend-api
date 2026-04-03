@@ -15,15 +15,25 @@ spring:
         backend: secret
         default-context: ${default_context_vault}
   datasource:
-    url: ${url_db}
-    username: ${username_db}
-    password: ${password_db}
+    url: ${DB_URL}
+    username: ${USERNAME_DB}
+    password: ${PASSWORD_DB}
     driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    defer-datasource-initialization: true
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:sql/data.sql
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${mail_username}
-    password: ${mail_password}
+    username: ${USERNAME_MAIL}
+    password: ${PASSWORD_MAIL}
     properties:
       mail:
         smtp:
@@ -35,12 +45,6 @@ spring:
     port: 8080
     address: 0.0.0.0
     forward-headers-strategy: framework
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
 
   profiles:
     active: local

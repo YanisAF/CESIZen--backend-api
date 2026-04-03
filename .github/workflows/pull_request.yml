@@ -1,0 +1,52 @@
+name: Pull Request
+
+on:
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+        options: >-
+          --health-cmd "pg_isready -U ${{ secrets.POSTGRES_USER }}"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      # Récupérer le code
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      # Configurer Java
+      - name: Configurer Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+
+      # Vérifier que les secrets sont bien injectés
+      - name: Vérifier les secrets
+        run: |
+          echo "POSTGRES_USER=$POSTGRES_USER"
+          echo "POSTGRES_DB=$POSTGRES_DB"
+        env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+
+      # Compile and teste Spring Boot application
+      - name: Compiler et exécuter les tests Maven
+        run: mvn clean verify -X
+        env:
+          # Injecter les secrets comme variables Spring Boot
+          SPRING_DATASOURCE_URL: ${{ secrets.URL_DB }}
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.USERNAME_DB }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.PASSWORD_DB }}
