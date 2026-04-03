@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Table(name = "anonymized_log")
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserAnonymizedLog {
     @JsonProperty("user_id")
     @Id

@@ -37,7 +37,7 @@ class UserServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @Mock
-    ResultDiagnosisRepository resultDiagnosisRepository;
+    private ResultDiagnosisRepository resultDiagnosisRepository;
 
     @InjectMocks
     private UserService userService;
@@ -50,14 +50,14 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         validRequest = new UserDtoRequest();
-        validRequest.setUserName("johndoe");
+        validRequest.setUsername("johndoe");
         validRequest.setEmail("john.doe@example.com");
         validRequest.setPhone("0612345678");
         validRequest.setPassword("password123");
 
         savedUser = new User();
         savedUser.setId(1L);
-        savedUser.setUserName("johndoe");
+        savedUser.setUsername("johndoe");
         savedUser.setEmail("john.doe@example.com");
         savedUser.setPhone("0612345678");
         savedUser.setPassword("$2a$10$hashedpassword");
@@ -71,7 +71,7 @@ class UserServiceTest {
     @Test
     @DisplayName("USR-01 | register() - Succès : nouvel utilisateur valide")
     void register_shouldReturnUserDto_whenRequestIsValid() throws AllUserException {
-        when(userRepository.existsByEmail(validRequest.getUserName())).thenReturn(false);
+        when(userRepository.existsByEmail(validRequest.getUsername())).thenReturn(false);
         when(userRepository.existsByEmail(validRequest.getEmail())).thenReturn(false);
         when(passwordEncoder.encode(anyString())).thenReturn("$2a$10$hashedpassword");
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
@@ -79,7 +79,7 @@ class UserServiceTest {
         UserDtoResponse result = userService.register(validRequest);
 
         assertThat(result).isNotNull();
-        assertThat(result.getUserName()).isEqualTo("johndoe");
+        assertThat(result.getUsername()).isEqualTo("johndoe");
         assertThat(result.getEmail()).isEqualTo("john.doe@example.com");
         assertThat(result.getRole()).isEqualTo(Roles.ROLE_USER);
         verify(userRepository).save(any(User.class));
@@ -88,7 +88,7 @@ class UserServiceTest {
     @Test
     @DisplayName("USR-02 | register() - Échec : username vide")
     void register_shouldThrow_whenUserNameIsBlank() {
-        validRequest.setUserName("   ");
+        validRequest.setUsername("   ");
 
         AllUserException ex = catchThrowableOfType(
                 () -> userService.register(validRequest),
@@ -133,7 +133,7 @@ class UserServiceTest {
     @Test
     @DisplayName("USR-05 | register() - Échec : email déjà existant (vérification via username lookup)")
     void register_shouldThrow_whenUserNameAlreadyExists() {
-        when(userRepository.existsByEmail(validRequest.getUserName())).thenReturn(true);
+        when(userRepository.existsByEmail(validRequest.getUsername())).thenReturn(true);
 
         AllUserException ex = catchThrowableOfType(
                 () -> userService.register(validRequest),
@@ -148,7 +148,7 @@ class UserServiceTest {
     @Test
     @DisplayName("USR-06 | register() - Échec : email déjà utilisé par un autre compte")
     void register_shouldThrow_whenEmailAlreadyExists() {
-        when(userRepository.existsByEmail(validRequest.getUserName())).thenReturn(false);
+        when(userRepository.existsByEmail(validRequest.getUsername())).thenReturn(false);
         when(userRepository.existsByEmail(validRequest.getEmail())).thenReturn(true);
 
         AllUserException ex = catchThrowableOfType(
@@ -169,7 +169,7 @@ class UserServiceTest {
     @DisplayName("USR-07 | registerAdmin() - Succès : rôle ADMIN attribué")
     void registerAdmin_shouldAssignAdminRole() throws AllUserException {
         savedUser.setRole(Roles.ROLE_ADMIN);
-        when(userRepository.existsByEmail(validRequest.getUserName())).thenReturn(false);
+        when(userRepository.existsByEmail(validRequest.getUsername())).thenReturn(false);
         when(userRepository.existsByEmail(validRequest.getEmail())).thenReturn(false);
         when(passwordEncoder.encode(anyString())).thenReturn("$2a$10$hashedpassword");
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
@@ -192,7 +192,7 @@ class UserServiceTest {
 
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
-        assertThat(result.getUserName()).isEqualTo("johndoe");
+        assertThat(result.getUsername()).isEqualTo("johndoe");
     }
 
     @Test
@@ -218,7 +218,7 @@ class UserServiceTest {
     void getAllUsers_shouldReturnAllUsers() {
         User user2 = new User();
         user2.setId(2L);
-        user2.setUserName("janedoe");
+        user2.setUsername("janedoe");
         user2.setEmail("jane@example.com");
         user2.setRole(Roles.ROLE_USER);
 
@@ -227,7 +227,7 @@ class UserServiceTest {
         List<UserDtoResponse> result = userService.getAllUsers();
 
         assertThat(result).hasSize(2);
-        assertThat(result).extracting(UserDtoResponse::getUserName)
+        assertThat(result).extracting(UserDtoResponse::getUsername)
                 .containsExactlyInAnyOrder("johndoe", "janedoe");
     }
 
@@ -249,11 +249,11 @@ class UserServiceTest {
     @DisplayName("USR-12 | patchUser() - Succès : mise à jour du username")
     void patchUser_shouldUpdateUserName() throws AllUserException {
         UserPatchRequest patchRequest = new UserPatchRequest();
-        patchRequest.setUserName("newusername");
+        patchRequest.setUsername("newusername");
 
         User updatedUser = new User();
         updatedUser.setId(1L);
-        updatedUser.setUserName("newusername");
+        updatedUser.setUsername("newusername");
         updatedUser.setEmail("john.doe@example.com");
         updatedUser.setRole(Roles.ROLE_USER);
 
@@ -262,7 +262,7 @@ class UserServiceTest {
 
         UserDtoResponse result = userService.patchUser(1L, patchRequest);
 
-        assertThat(result.getUserName()).isEqualTo("newusername");
+        assertThat(result.getUsername()).isEqualTo("newusername");
     }
 
     @Test
@@ -273,7 +273,7 @@ class UserServiceTest {
 
         User updatedUser = new User();
         updatedUser.setId(1L);
-        updatedUser.setUserName("johndoe");
+        updatedUser.setUsername("johndoe");
         updatedUser.setEmail("newemail@example.com");
         updatedUser.setRole(Roles.ROLE_USER);
 

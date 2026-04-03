@@ -17,7 +17,7 @@ public class UserDtoRequest {
     @NotBlank(message = "Username is required")
     @Size(min = 3, max = 32, message = "Username must be between 3 and 32 characters")
     @JsonProperty("user_name")
-    private String userName;
+    private String username;
 
     @JsonProperty("email")
     @NotBlank(message = "Email is required")

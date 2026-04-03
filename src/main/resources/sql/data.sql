@@ -20,10 +20,10 @@ ON CONFLICT DO NOTHING;
 -- ========================
 -- 2. Insertion des utilisateurs
 -- ========================
-INSERT INTO users (user_name, email, phone, password, role, last_activity_at) VALUES
-('admin_cesizen', 'admin@cesizen.fr', '', '$2a$10$zFJxkB6/4q3GxVJ1jXyqIu7v6x6mR8B7nQJ7mYc5Y0GhD8bK1r1Ge', 'ROLE_ADMIN', CURRENT_TIMESTAMP),
-('test_user', 'user@cesizen.fr', '', '$2a$10$8K1p/a0dL1LXMIgoEDFrw.0v.4x.E.y.z.A.B.C.D.E.F.G.H.I.J', 'ROLE_USER', CURRENT_TIMESTAMP),
-('jane_doe', 'jane@cesizen.fr', '', '$2a$10$E1kO31.H.G.y8.19g12.1.2.3.4.5.6.7.8.9.0.1.2.3.4.5.6.7.8', 'ROLE_USER', CURRENT_TIMESTAMP)
+INSERT INTO users (user_name, email, phone, password, role, last_activity_at, is_active) VALUES
+('admin_cesizen', 'admin@cesizen.fr', '', '$2a$10$zFJxkB6/4q3GxVJ1jXyqIu7v6x6mR8B7nQJ7mYc5Y0GhD8bK1r1Ge', 'ROLE_ADMIN', CURRENT_TIMESTAMP, true),
+('test_user', 'user@cesizen.fr', '', '$2a$10$8K1p/a0dL1LXMIgoEDFrw.0v.4x.E.y.z.A.B.C.D.E.F.G.H.I.J', 'ROLE_USER', CURRENT_TIMESTAMP, true),
+('jane_doe', 'jane@cesizen.fr', '', '$2a$10$E1kO31.H.G.y8.19g12.1.2.3.4.5.6.7.8.9.0.1.2.3.4.5.6.7.8', 'ROLE_USER', CURRENT_TIMESTAMP, true)
 ON CONFLICT DO NOTHING;
 
 -- ========================
@@ -75,7 +75,7 @@ ON CONFLICT DO NOTHING;
 -- 7. Configuration des messages de résultat pour le quiz (Holmes & Rahe)
 -- ========================
 INSERT INTO result_message_config (quiz_id, min_score, max_score, risk_level, message) VALUES
-(1, 0, 150, 'Faible', 'Votre niveau de stress est faible selon l’échelle Holmes & Rahe.'),
-(1, 151, 299, 'Modéré', 'Votre niveau de stress est modéré, faites attention et prenez des mesures pour gérer votre stress.'),
-(1, 300, 1000, 'Élevé', 'Votre niveau de stress est élevé. Il est conseillé de consulter un professionnel ou d’adopter des stratégies de gestion du stress.')
+(1, 0, 150, 'FAIBLE', 'Votre niveau de stress est faible selon l’échelle Holmes & Rahe.'),
+(1, 151, 299, 'MODERE', 'Votre niveau de stress est modéré, faites attention et prenez des mesures pour gérer votre stress.'),
+(1, 300, 1000, 'ELEVE', 'Votre niveau de stress est élevé. Il est conseillé de consulter un professionnel ou d’adopter des stratégies de gestion du stress.')
 ON CONFLICT DO NOTHING;

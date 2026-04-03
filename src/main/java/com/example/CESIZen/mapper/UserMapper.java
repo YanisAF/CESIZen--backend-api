@@ -9,7 +9,7 @@ public class UserMapper {
         if(user != null){
             UserDtoResponse userDtoResponse = new UserDtoResponse();
             userDtoResponse.setId(user.getId());
-            userDtoResponse.setUserName(user.getUserName());
+            userDtoResponse.setUsername(user.getUsername());
             userDtoResponse.setEmail(user.getEmail());
             userDtoResponse.setPhone(user.getPhone());
             userDtoResponse.setRole(user.getRole());
@@ -21,7 +21,7 @@ public class UserMapper {
     public static User mapToUser(UserDtoRequest userDtoRequest){
         if (userDtoRequest != null){
             User user = new User();
-            user.setUserName(userDtoRequest.getUserName());
+            user.setUsername(userDtoRequest.getUsername());
             user.setEmail(userDtoRequest.getEmail());
             user.setPassword(userDtoRequest.getPhone());
             user.setPassword(userDtoRequest.getPassword());

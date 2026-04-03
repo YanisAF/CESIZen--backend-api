@@ -12,6 +12,8 @@ public final class Routes {
     public static final String UPDATE_USER_PROFIL = "/update-profil";
     public static final String USER_LIST = "/users-list";
     public static final String FILTER_USER_ROLE_LIST = "/filter-users-list";
+    public static final String DEACTIVATE_PROFIL = "/deactivate";
+    public static final String REACTIVATE_PROFIL = "/reactivate";
     public static final String DELETE_USER = "/delete";
 
     public static final String REQUEST_PASSWORD = "/request-password";

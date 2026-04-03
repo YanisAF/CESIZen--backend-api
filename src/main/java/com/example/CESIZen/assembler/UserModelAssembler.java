@@ -22,7 +22,7 @@ public class UserModelAssembler implements RepresentationModelAssembler<UserDtoR
                     linkTo(methodOn(UserController.class).getAllUsersWithFilter()).withRel("/filter-users-list"),
                     linkTo(methodOn(UserController.class).createUserUrl(new UserDtoRequest(
                             id,
-                            user.getUserName() != null ? user.getUserName() : "",
+                            user.getUsername() != null ? user.getUsername() : "",
                             user.getEmail() != null ? user.getEmail() : "",
                             user.getRole() != null ? user.getRole() : null
                     ))).withRel("create-user")

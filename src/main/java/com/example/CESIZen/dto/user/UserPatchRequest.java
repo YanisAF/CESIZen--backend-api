@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class UserPatchRequest {
     @JsonProperty("user_name")
-    private String userName;
+    private String username;
     private String email;
     private String phone;
 }

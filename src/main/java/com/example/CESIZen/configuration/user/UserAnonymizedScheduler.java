@@ -31,4 +31,11 @@ public class UserAnonymizedScheduler {
         userAnonymizedLog.save(anonymizedLog);
         log.info("Anonymisation utilisateurs inactifs : {} comptes traités", updated);
     }
+
+    @Scheduled(cron = "0 30 2 * * SUN")
+    @Transactional
+    public void cleanupOldAnonymizationLogs() {
+        userAnonymizedLog.deleteByCreatedAtBefore();
+        log.info("Nettoyage des logs d'anonymisation : {} entrées supprimées");
+    }
 }
