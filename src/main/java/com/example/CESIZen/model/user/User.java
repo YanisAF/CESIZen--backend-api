@@ -26,7 +26,7 @@ public class User {
     @NotBlank(message = "Ce champ est obligatoire")
     @JsonProperty("user_name")
     @Column(name = "user_name", unique = true, nullable = false)
-    private String userName;
+    private String username;
 
     @NotBlank(message = "Ce champ est obligatoire")
     @JsonProperty("email")
@@ -48,6 +48,18 @@ public class User {
 
     @JsonProperty("last_activity_at")
     private LocalDateTime lastActivityAt = LocalDateTime.now();
+
+    @JsonProperty("is_active")
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive = true;
+
+    @JsonProperty("original_username")
+    @Column(name = "original_username")
+    private String originalUsername;
+
+    @JsonProperty("original_email")
+    @Column(name = "original_email")
+    private String originalEmail;
 
     @JsonProperty("anonymized_at")
     private LocalDateTime anonymizedAt;

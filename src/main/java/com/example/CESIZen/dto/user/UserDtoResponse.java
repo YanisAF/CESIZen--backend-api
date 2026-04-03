@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class UserDtoResponse {
     private Long id;
     @JsonProperty("user_name")
-    private String userName;
+    private String username;
     @JsonProperty("email")
     private String email;
     @JsonProperty("phone")

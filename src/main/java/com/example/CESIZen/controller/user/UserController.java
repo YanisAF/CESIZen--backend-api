@@ -1,10 +1,13 @@
 package com.example.CESIZen.controller.user;
 
 import com.example.CESIZen.assembler.UserModelAssembler;
+import com.example.CESIZen.dto.user.DeactivateResponseDto;
 import com.example.CESIZen.dto.user.UserDtoRequest;
 import com.example.CESIZen.dto.user.UserDtoResponse;
 import com.example.CESIZen.dto.user.UserPatchRequest;
 import com.example.CESIZen.exception.AllUserException;
+import com.example.CESIZen.exception.ResourceNotFoundException;
+import com.example.CESIZen.service.user.UserDeactivateService;
 import com.example.CESIZen.service.user.UserService;
 import com.example.CESIZen.utils.Routes;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,7 @@ public class UserController {
 
     private final UserService userService;
     private final UserModelAssembler userModelAssembler;
+    private final UserDeactivateService userDeactivateService;
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping(Routes.USER_LIST)
@@ -75,7 +79,7 @@ public class UserController {
         String currentUsername = authentication.getName();
         UserDtoResponse target = userService.getUserById(id);
 
-        if (!target.getUserName().equals(currentUsername)) {
+        if (!target.getUsername().equals(currentUsername)) {
             throw new AllUserException(
                     HttpStatus.FORBIDDEN,
                     LocalDateTime.now(),
@@ -96,6 +100,18 @@ public class UserController {
 
         UserDtoResponse updated = userService.patchUser(id, patchRequest);
         return ResponseEntity.ok(updated);
+    }
+
+    @PatchMapping(Routes.DEACTIVATE_PROFIL)
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<DeactivateResponseDto> deactivate(@RequestParam Long id) throws ResourceNotFoundException {
+        return ResponseEntity.ok(userDeactivateService.deactivate(id));
+    }
+
+    @PatchMapping(Routes.REACTIVATE_PROFIL)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<DeactivateResponseDto> reactivate(@RequestParam Long id) throws ResourceNotFoundException {
+        return ResponseEntity.ok(userDeactivateService.reactivate(id));
     }
 
     @DeleteMapping(Routes.DELETE_USER)

@@ -51,7 +51,7 @@ public class EmailService {
 
     public void sendConfirmationReset(User user) {
         Context context = new Context();
-        context.setVariable("name", user.getUserName());
+        context.setVariable("name", user.getUsername());
         String html = templateEngine.process(
                 "confirmation-reset-password",
                 context
@@ -77,7 +77,7 @@ public class EmailService {
 
     public void sendNotifAuthentication(User user, String ip, String device){
         Context context = new Context();
-        context.setVariable( "name", user.getUserName());
+        context.setVariable( "name", user.getUsername());
         context.setVariable("date", user.getLastActivityAt());
         context.setVariable("ip", ip);
         context.setVariable("device", device);
@@ -107,7 +107,7 @@ public class EmailService {
 
     public void sendNotifRegister(User user){
         Context context = new Context();
-        context.setVariable("name", user.getUserName());
+        context.setVariable("name", user.getUsername());
 
         String html = templateEngine.process(
                 "confirmation-account-creation",

@@ -30,8 +30,10 @@ public class AuthService {
     private final EventService eventService;
 
 
-    public AuthService(JwtUtils jwtUtils, AuthenticationManager authenticationManager,
-                       UserRepository userRepository, EventService eventService) {
+    public AuthService(JwtUtils jwtUtils,
+                       AuthenticationManager authenticationManager,
+                       UserRepository userRepository,
+                       EventService eventService) {
         this.jwtUtils = jwtUtils;
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
@@ -63,7 +65,7 @@ public class AuthService {
         Map<String, Object> userDto = new HashMap<>();
 
         userDto.put("id", user.getId());
-        userDto.put("user_name", user.getUserName());
+        userDto.put("user_name", user.getUsername());
         userDto.put("email", user.getEmail());
         userDto.put("role", user.getRole());
         userDto.put("last_activity_at", user.getLastActivityAt());
@@ -80,7 +82,7 @@ public class AuthService {
                         loginDtoRequest.getPassword()));
         if (authentication.isAuthenticated()){
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            User user = userRepository.findByUserName(userDetails.getUsername());
+            User user = userRepository.findByUsername(userDetails.getUsername());
             user.setLastActivityAt(LocalDateTime.now());
             userRepository.save(user);
 
@@ -97,7 +99,7 @@ public class AuthService {
                         loginDtoRequest.getPassword()));
         if (authentication.isAuthenticated()){
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            User user = userRepository.findByUserName(userDetails.getUsername());
+            User user = userRepository.findByUsername(userDetails.getUsername());
             user.setLastActivityAt(LocalDateTime.now());
             userRepository.save(user);
 

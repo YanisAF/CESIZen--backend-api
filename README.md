@@ -100,7 +100,10 @@ Cette méthode est recommandée pour un environnement de développement complet,
     ```
     **Important**: Remplacez les valeurs de `PASSWORD_MAIL`, utilisez un mot de passe d'application Gmail avec l'authentification à deux facteurs.
 
-3.  **Construire et démarrer les services Docker** :
+3.  **Créer le réseau nécessaire à la communication entre l'API et le backoffice web. Construire et démarrer les services Docker** :
+    ```bash
+    docker network create app-network || true
+
     ```bash
     docker-compose up -d --build
     ```

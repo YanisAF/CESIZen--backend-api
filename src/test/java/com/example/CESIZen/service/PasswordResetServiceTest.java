@@ -44,7 +44,7 @@ class PasswordResetServiceTest {
     void setUp() {
         user = new User();
         user.setId(1L);
-        user.setUserName("johndoe");
+        user.setUsername("johndoe");
         user.setEmail("john.doe@example.com");
         user.setPhone("0612345678");
         user.setPassword("$2a$10$encoded");

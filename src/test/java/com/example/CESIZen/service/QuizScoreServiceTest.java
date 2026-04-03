@@ -91,7 +91,7 @@ class QuizScoreServiceTest {
 
         user = new User();
         user.setId(1L);
-        user.setUserName("john.doe");
+        user.setUsername("john.doe");
     }
 
     // ══════════════════════════════════════════════════════════════════════════
@@ -217,7 +217,7 @@ class QuizScoreServiceTest {
         savedDiagnosis.setUser(user);
 
         when(quizRepository.findById(1)).thenReturn(Optional.of(quiz));
-        when(userRepository.findByUserName("john.doe")).thenReturn(user);
+        when(userRepository.findByUsername("john.doe")).thenReturn(user);
         when(resultMessageConfigRepository
                 .findByQuizIdAndMinScoreLessThanEqualAndMaxScoreGreaterThanEqual(eq(1), eq(3), eq(3)))
                 .thenReturn(Optional.of(lowConfig));
@@ -249,7 +249,7 @@ class QuizScoreServiceTest {
         savedDiagnosis.setUser(user);
 
         when(quizRepository.findById(1)).thenReturn(Optional.of(quiz));
-        when(userRepository.findByUserName("john.doe")).thenReturn(user);
+        when(userRepository.findByUsername("john.doe")).thenReturn(user);
         when(resultMessageConfigRepository
                 .findByQuizIdAndMinScoreLessThanEqualAndMaxScoreGreaterThanEqual(eq(1), eq(3), eq(3)))
                 .thenReturn(Optional.of(lowConfig));
@@ -275,7 +275,7 @@ class QuizScoreServiceTest {
         savedDiagnosis.setUser(user);
 
         when(quizRepository.findById(1)).thenReturn(Optional.of(quiz));
-        when(userRepository.findByUserName("john.doe")).thenReturn(user);
+        when(userRepository.findByUsername("john.doe")).thenReturn(user);
         when(resultMessageConfigRepository
                 .findByQuizIdAndMinScoreLessThanEqualAndMaxScoreGreaterThanEqual(eq(1), eq(7), eq(7)))
                 .thenReturn(Optional.of(highConfig));
@@ -301,7 +301,7 @@ class QuizScoreServiceTest {
     @DisplayName("SAV-05 | saveResult() - Échec : utilisateur introuvable")
     void saveResult_shouldThrow_whenUserNotFound() {
         when(quizRepository.findById(1)).thenReturn(Optional.of(quiz));
-        when(userRepository.findByUserName("unknown")).thenReturn(null);
+        when(userRepository.findByUsername("unknown")).thenReturn(null);
 
         assertThatThrownBy(() -> quizScoreService.saveResult(1, "unknown", new QuizSubmissionDto()))
                 .isInstanceOf(ResourceNotFoundException.class)
@@ -315,7 +315,7 @@ class QuizScoreServiceTest {
         submission.setAnswers(Map.of(1, true, 2, false));
 
         when(quizRepository.findById(1)).thenReturn(Optional.of(quiz));
-        when(userRepository.findByUserName("john.doe")).thenReturn(user);
+        when(userRepository.findByUsername("john.doe")).thenReturn(user);
         when(resultMessageConfigRepository
                 .findByQuizIdAndMinScoreLessThanEqualAndMaxScoreGreaterThanEqual(anyInt(), anyInt(), anyInt()))
                 .thenReturn(Optional.empty());

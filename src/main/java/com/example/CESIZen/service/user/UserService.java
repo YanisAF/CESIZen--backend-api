@@ -32,7 +32,7 @@ public class UserService {
     }
 
     public UserDtoResponse register(UserDtoRequest userDtoRequest) throws AllUserException {
-        if (userNameOrEmailIsNotPresent(userDtoRequest) || userRepository.existsByEmail(userDtoRequest.getUserName())){
+        if (userNameOrEmailIsNotPresent(userDtoRequest) || userRepository.existsByEmail(userDtoRequest.getUsername())){
             throw new AllUserException(
                     HttpStatus.NOT_ACCEPTABLE,
                     LocalDateTime.now(),
@@ -65,7 +65,7 @@ public class UserService {
 
     private User getUser(UserDtoRequest userDtoRequest) {
         User newUser = new User();
-        newUser.setUserName(userDtoRequest.getUserName());
+        newUser.setUsername(userDtoRequest.getUsername());
         newUser.setEmail(userDtoRequest.getEmail());
         newUser.setPhone(userDtoRequest.getPhone());
         newUser.setPassword(passwordEncoder.encode(userDtoRequest.getPassword()));
@@ -74,7 +74,7 @@ public class UserService {
 
     public UserDtoResponse createUser(UserDtoRequest userDtoRequest) throws AllUserException{
         userDtoRequest.setEmail(userDtoRequest.getEmail().toLowerCase());
-        userDtoRequest.setUserName(userDtoRequest.getUserName().toLowerCase());
+        userDtoRequest.setUsername(userDtoRequest.getUsername().toLowerCase());
         User newUser = requestCreateUser(userDtoRequest, false);
         User userSaved = userRepository.save(newUser);
         return UserMapper.toDto(userSaved);
@@ -92,37 +92,32 @@ public class UserService {
     }
 
     public UserDtoResponse registerAdmin(UserDtoRequest userDtoRequest) throws AllUserException{
-        if (userNameOrEmailIsNotPresent(userDtoRequest) || userRepository.existsByEmail(userDtoRequest.getUserName())){
+        if (userRepository.existsByUsername(userDtoRequest.getUsername())){
             throw new AllUserException(
                     HttpStatus.NOT_ACCEPTABLE,
                     LocalDateTime.now(),
                     "Username is blank or already exists",
-                    "/api/v1/auth/register"
+                    "/api/v1/auth/register-admin"
             );
         }
+        if (userRepository.existsByEmail(userDtoRequest.getEmail())){
+            throw new AllUserException(
+                    HttpStatus.NOT_ACCEPTABLE,
+                    LocalDateTime.now(),
+                    "Email is blank or already exists",
+                    "/api/v1/auth/register-admin"
+            );
+        }
+
+        userDtoRequest.setEmail(userDtoRequest.getEmail().toLowerCase());
+        userDtoRequest.setUsername(userDtoRequest.getUsername().toLowerCase());
         User newUser = requestCreateUser(userDtoRequest, true);
         User userSaved = userRepository.save(newUser);
         return UserMapper.toDto(userSaved);
     }
 
-    public UserDtoResponse getUserAdminById(Long id) throws AllUserException {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new AllUserException(
-                        HttpStatus.NOT_FOUND,
-                        LocalDateTime.now(),
-                        "User not found",
-                        "/api/users/profil"
-                ));
-        return UserMapper.toDto(user);
-    }
-
-    public UserDtoResponse getUserByName(UserDtoRequest userDtoRequest){
-        User user = userRepository.findByUserName(userDtoRequest.getUserName());
-        return UserMapper.toDto(user);
-    }
-
     private static boolean userNameOrEmailIsNotPresent(UserDtoRequest userDtoRequest) {
-        return (userDtoRequest.getUserName().isBlank() || userDtoRequest.getEmail().isBlank() || userDtoRequest.getPassword().isBlank());
+        return (userDtoRequest.getUsername().isBlank() || userDtoRequest.getEmail().isBlank() || userDtoRequest.getPassword().isBlank());
     }
 
     public List<UserDtoResponse> getAllUsers(){
@@ -148,8 +143,8 @@ public class UserService {
                         "/api/v1/users/" + id
                 ));
 
-        if (patchRequest.getUserName() != null && !patchRequest.getUserName().isBlank()) {
-            user.setUserName(patchRequest.getUserName());
+        if (patchRequest.getUsername() != null && !patchRequest.getUsername().isBlank()) {
+            user.setUsername(patchRequest.getUsername());
         }
 
         if (patchRequest.getEmail() != null && !patchRequest.getEmail().isBlank()) {
