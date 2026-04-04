@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-init-data
+      author: dev
+      changes:
+        - sqlFile:
+            path: db/changelog/scripts/002-init-data.sql
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            splitStatements: true
+            stripComments: true
