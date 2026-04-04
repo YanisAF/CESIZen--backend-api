@@ -1,6 +1,6 @@
 spring:
   application:
-    name: CESIZen
+    name: user-backend-api
   jackson:
     time-zone: UTC
   cloud:
@@ -13,7 +13,7 @@ spring:
       kv:
         enabled: true
         backend: secret
-        default-context: ${default_context_vault}
+        default-context: user-backend-api
   datasource:
     url: ${DB_URL}
     username: ${USERNAME_DB}
@@ -21,14 +21,13 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
-    defer-datasource-initialization: true
+      ddl-auto: none
     show-sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-  sql:
-    init:
-      mode: always
-      schema-locations: classpath:sql/data.sql
+  defer-datasource-initialization: true
+  liquibase:
+    change-log: db/changelog/changelog-master.xml
+    enabled: true
   mail:
     host: smtp.gmail.com
     port: 587
@@ -45,7 +44,6 @@ spring:
     port: 8080
     address: 0.0.0.0
     forward-headers-strategy: framework
-
   profiles:
     active: local
 
@@ -63,11 +61,12 @@ logging:
     org.springframework.vault: DEBUG
 
 ---
+
 spring:
   config:
     activate:
       on-profile: docker
   datasource:
-    url: ${url_db}
-    username: ${username_db}
-    password: ${password_db}
+    url: ${DB_URL}
+    username: ${USERNAME_DB}
+    password: ${PASSWORD_DB}

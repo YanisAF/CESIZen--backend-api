@@ -1,0 +1,282 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-init-database-tables
+      author: dev
+      changes:
+
+        # category
+        - createTable:
+            tableName: category
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+        # page
+        - createTable:
+            tableName: page
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: title
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: image_url
+                  type: VARCHAR(255)
+              - column:
+                  name: category_id
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: page
+            baseColumnNames: category_id
+            referencedTableName: category
+            referencedColumnNames: id
+            constraintName: fk_page_category
+
+        # content
+        - createTable:
+            tableName: content
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(1000)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: VARCHAR(2000)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: item
+                  type: VARCHAR(2000)
+              - column:
+                  name: page_id
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: content
+            baseColumnNames: page_id
+            referencedTableName: page
+            referencedColumnNames: id
+            constraintName: fk_content_page
+
+        # quiz
+        - createTable:
+            tableName: quiz
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: title
+                  type: VARCHAR(255)
+                  constraints:
+                    unique: true
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+
+        # question
+        - createTable:
+            tableName: question
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: statement
+                  type: VARCHAR(255)
+              - column:
+                  name: score_value
+                  type: INTEGER
+              - column:
+                  name: correct_answer
+                  type: BOOLEAN
+              - column:
+                  name: quiz_id
+                  type: INTEGER
+        - addForeignKeyConstraint:
+            baseTableName: question
+            baseColumnNames: quiz_id
+            referencedTableName: quiz
+            referencedColumnNames: id
+            constraintName: fk_question_quiz
+        - addUniqueConstraint:
+            tableName: question
+            columnNames: statement, quiz_id
+            constraintName: uq_question_statement_quiz
+
+        # result_message_config
+        - createTable:
+            tableName: result_message_config
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: min_score
+                  type: INTEGER
+              - column:
+                  name: max_score
+                  type: INTEGER
+              - column:
+                  name: risk_level
+                  type: VARCHAR(255)
+              - column:
+                  name: message
+                  type: VARCHAR(255)
+              - column:
+                  name: quiz_id
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: result_message_config
+            baseColumnNames: quiz_id
+            referencedTableName: quiz
+            referencedColumnNames: id
+            constraintName: fk_result_message_config_quiz
+
+        # users
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: phone
+                  type: VARCHAR(255)
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role
+                  type: VARCHAR(50)
+              - column:
+                  name: last_activity_at
+                  type: TIMESTAMP
+              - column:
+                  name: is_active
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: original_username
+                  type: VARCHAR(255)
+              - column:
+                  name: original_email
+                  type: VARCHAR(255)
+              - column:
+                  name: anonymized_at
+                  type: TIMESTAMP
+
+        # result_diagnosis
+        - createTable:
+            tableName: result_diagnosis
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: total_score
+                  type: INTEGER
+              - column:
+                  name: message
+                  type: VARCHAR(255)
+              - column:
+                  name: risk_level
+                  type: VARCHAR(255)
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+              - column:
+                  name: user_id
+                  type: BIGINT
+              - column:
+                  name: quiz_id
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: result_diagnosis
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_result_diagnosis_user
+        - addForeignKeyConstraint:
+            baseTableName: result_diagnosis
+            baseColumnNames: quiz_id
+            referencedTableName: quiz
+            referencedColumnNames: id
+            constraintName: fk_result_diagnosis_quiz
+
+        # anonymized_log
+        - createTable:
+            tableName: anonymized_log
+            columns:
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: executed_at
+                  type: TIMESTAMP
