@@ -28,21 +28,24 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Test variables CI
+      - name: Test injection des secrets GitHub
         run: |
-          echo "DB URL = $SPRING_DATASOURCE_URL"
-          echo "DB USER = $SPRING_DATASOURCE_USERNAME"
+          echo "🔍 Vérification des secrets..."
 
-          if [ -z "$SPRING_DATASOURCE_URL" ]; then
-            echo "❌ SPRING_DATASOURCE_URL VIDE"
-            exit 1
-          fi
+          test -n "$SPRING_DATASOURCE_URL" || (echo "❌ URL_DB manquant" && exit 1)
+          test -n "$SPRING_DATASOURCE_USERNAME" || (echo "❌ USERNAME_DB manquant" && exit 1)
+          test -n "$SPRING_DATASOURCE_PASSWORD" || (echo "❌ PASSWORD_DB manquant" && exit 1)
 
-          echo "✅ Variables OK"
+          test -n "$SONAR_HOST_URL" || (echo "❌ SONAR_HOST_URL manquant" && exit 1)
+          test -n "$SONAR_TOKEN" || (echo "❌ SONAR_TOKEN manquant" && exit 1)
+
+          echo "✅ Tous les secrets GitHub sont injectés"
         env:
           SPRING_DATASOURCE_URL: ${{ secrets.URL_DB }}
           SPRING_DATASOURCE_USERNAME: ${{ secrets.USERNAME_DB }}
           SPRING_DATASOURCE_PASSWORD: ${{ secrets.PASSWORD_DB }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       # Java 21
       - name: Configurer Java 21
