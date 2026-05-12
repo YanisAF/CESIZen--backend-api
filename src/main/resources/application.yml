@@ -52,9 +52,6 @@ jwt:
   secret-key: ${jwt_secret_key}
   expiration-time: 3600000
 
-server:
-  port: 8080
-
 logging:
   level:
     org.springframework.cloud.vault: DEBUG
