@@ -9,6 +9,8 @@ import com.example.CESIZen.model.quiz.Question;
 import com.example.CESIZen.model.quiz.Quiz;
 import com.example.CESIZen.repository.QuestionRepository;
 import com.example.CESIZen.repository.QuizRepository;
+import com.example.CESIZen.repository.ResultDiagnosisRepository;
+import com.example.CESIZen.repository.ResultMessageConfigRepository;
 import com.example.CESIZen.service.quiz.QuizService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,6 +38,9 @@ class QuizServiceTest {
 
     @Mock
     private QuestionRepository questionRepository;
+
+    @Mock
+    private ResultMessageConfigRepository resultMessageConfigRepository;
 
     @InjectMocks
     private QuizService quizService;
@@ -239,10 +244,19 @@ class QuizServiceTest {
     @Test
     @DisplayName("QZ-12 | deleteById() - Succès : suppression effective")
     void deleteById_Test() {
-        doNothing().when(quizRepository).deleteById(1);
+        Quiz quiz = new Quiz(
+                1,
+                "Title quiz",
+                "Quiz réflexion",
+                List.of(new Question(1, "Question ?", 200, true, new Quiz()))
+        );
+
+        doNothing().when(resultMessageConfigRepository).deleteAllResultMessageConfigByQuizId(quiz.getId());
+        doNothing().when(quizRepository).deleteById(quiz.getId());
 
         assertThatNoException().isThrownBy(() -> quizService.deleteById(1));
 
+        verify(resultMessageConfigRepository).deleteAllResultMessageConfigByQuizId(1);
         verify(quizRepository).deleteById(1);
     }
 
