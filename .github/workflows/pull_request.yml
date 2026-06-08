@@ -43,9 +43,18 @@ jobs:
       - name: Build + tests Maven
         run: mvn clean verify
         env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/cesizen_test
-          SPRING_DATASOURCE_USERNAME: postgres
-          SPRING_DATASOURCE_PASSWORD: postgres
+          # BDD
+          URL: jdbc:postgresql://localhost:5432/cesizen_test
+          USERNAME_DB: postgres
+          PASSWORD_DB: postgres
+
+          # JWT
+          jwt_secret_key: test-secret-key-for-ci
+          jwt_secret_reset: test-secret-reset-for-ci
+
+          # Mail
+          USERNAME_MAIL: test@example.com
+          PASSWORD_MAIL: fake-password
 
       # 📊 SonarQube
       - name: Analyse SonarQube
@@ -64,21 +73,31 @@ jobs:
       # 🧪 Test container API (smoke test)
       - name: Run API container
         run: |
-          # --network host = accès à postgres du service GitHub Actions
           docker run -d \
             --network host \
             --name api \
-            -e SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/cesizen_test \
-            -e SPRING_DATASOURCE_USERNAME=postgres \
-            -e SPRING_DATASOURCE_PASSWORD=postgres \
-            -e SPRING_PROFILES_ACTIVE=test \
+            -e URL=jdbc:postgresql://localhost:5432/cesizen_test \
+            -e USERNAME_DB=postgres \
+            -e PASSWORD_DB=postgres \
+            -e jwt_secret_key=test-secret-key-for-ci \
+            -e jwt_secret_reset=test-secret-reset-for-ci \
+            -e USERNAME_MAIL=test@example.com \
+            -e PASSWORD_MAIL=fake-password \
             cesizen-api:${{ github.sha }}
 
-          echo "Waiting API startup..."
           for i in {1..15}; do
-            curl --fail http://localhost:8080/actuator/health && break
-            echo "waiting..."
+            if curl --fail --silent http://localhost:8080/actuator/health; then
+              echo "✅ API is up!"
+              exit 0
+            fi
+            echo "Attempt $i/15..."
             sleep 3
           done
 
+          echo "❌ API did not start"
           docker logs api
+          exit 1
+
+      - name: Cleanup
+        if: always()
+        run: docker rm -f api || true

@@ -3,17 +3,6 @@ spring:
     name: user-backend-api
   jackson:
     time-zone: UTC
-  cloud:
-    vault:
-      host: ${VAULT_HOST}
-      port: ${VAULT_PORT}
-      scheme: ${VAULT_SCHEME}
-      authentication: token
-      token: ${VAULT_TOKEN}
-      kv:
-        enabled: true
-        backend: secret
-        default-context: user-backend-api
   datasource:
     url: ${URL}
     username: ${USERNAME_DB}
