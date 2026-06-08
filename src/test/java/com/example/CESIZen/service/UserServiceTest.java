@@ -169,7 +169,6 @@ class UserServiceTest {
     @DisplayName("USR-07 | registerAdmin() - Succès : rôle ADMIN attribué")
     void registerAdmin_Test() throws AllUserException {
         savedUser.setRole(Roles.ROLE_ADMIN);
-        when(userRepository.existsByEmail(validRequest.getUsername())).thenReturn(false);
         when(userRepository.existsByEmail(validRequest.getEmail())).thenReturn(false);
         when(passwordEncoder.encode(anyString())).thenReturn("$2a$10$hashedpassword");
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
