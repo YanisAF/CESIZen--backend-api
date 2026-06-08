@@ -64,7 +64,15 @@ jobs:
       # 🧪 Test container API (smoke test)
       - name: Run API container
         run: |
-          docker run -d -p 8080:8080 --name api cesizen-api:${{ github.sha }}
+          # --network host = accès à postgres du service GitHub Actions
+          docker run -d \
+            --network host \
+            --name api \
+            -e SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/cesizen_test \
+            -e SPRING_DATASOURCE_USERNAME=postgres \
+            -e SPRING_DATASOURCE_PASSWORD=postgres \
+            -e SPRING_PROFILES_ACTIVE=test \
+            cesizen-api:${{ github.sha }}
 
           echo "Waiting API startup..."
           for i in {1..15}; do
