@@ -27,8 +27,10 @@ import static org.mockito.Mockito.*;
 @DisplayName("Tests unitaires - ResultMessageConfigService")
 class ResultMessageConfigServiceTest {
 
-    @Mock private ResultMessageConfigRepository repository;
-    @Mock private QuizRepository quizRepository;
+    @Mock
+    private ResultMessageConfigRepository repository;
+    @Mock
+    private QuizRepository quizRepository;
 
     @InjectMocks
     private ResultMessageConfigService service;

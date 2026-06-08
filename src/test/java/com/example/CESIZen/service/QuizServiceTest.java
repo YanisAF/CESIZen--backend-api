@@ -238,7 +238,7 @@ class QuizServiceTest {
 
     @Test
     @DisplayName("QZ-12 | deleteById() - Succès : suppression effective")
-    void deleteById_shouldCallRepository() {
+    void deleteById_Test() {
         doNothing().when(quizRepository).deleteById(1);
 
         assertThatNoException().isThrownBy(() -> quizService.deleteById(1));
