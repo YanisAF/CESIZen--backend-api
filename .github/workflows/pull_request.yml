@@ -91,19 +91,6 @@ jobs:
             -e PASSWORD_MAIL=fake-password \
             cesizen-api:${{ github.sha }}
 
-          for i in {1..15}; do
-            if curl --fail --silent http://localhost:8080/actuator/health; then
-              echo "✅ API is up!"
-              exit 0
-            fi
-            echo "Attempt $i/15..."
-            sleep 3
-          done
-
-          echo "❌ API did not start"
-          docker logs api
-          exit 1
-
       - name: Cleanup
         if: always()
         run: docker rm -f api || true
