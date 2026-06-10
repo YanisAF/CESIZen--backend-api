@@ -34,7 +34,7 @@ spring:
     address: 0.0.0.0
     forward-headers-strategy: framework
   profiles:
-    active: local
+    active: ${SPRING_PROFILE_ACTIVE}
 
 jwt:
   secret-reset: ${jwt_secret_reset}
