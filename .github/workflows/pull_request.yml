@@ -49,8 +49,9 @@ jobs:
           PASSWORD_DB: cesizen
           jwt_secret_key: test-secret-key-for-ci
           jwt_secret_reset: test-secret-reset-for-ci
-          USERNAME_MAIL: ${USERNAME_MAIL}
-          PASSWORD_MAIL: ${PASSWORD_MAIL}
+          USERNAME_MAIL: test@example.com
+          PASSWORD_MAIL: fake-password
+          SPRING_PROFILE_ACTIVE: test
 
       # 📦 Sauvegarde les rapports même si les tests échouent
       - name: Upload Surefire Reports
