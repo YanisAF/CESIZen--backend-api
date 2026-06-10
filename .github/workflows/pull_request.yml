@@ -12,9 +12,9 @@ jobs:
       postgres:
         image: postgres:15
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: cesizen_test
+          POSTGRES_USER: cesizen
+          POSTGRES_PASSWORD: cesizen
+          POSTGRES_DB: cesizen
         ports:
           - 5432:5432
         options: >-
@@ -44,17 +44,13 @@ jobs:
         run: mvn clean verify -e
         env:
           # BDD
-          URL: jdbc:postgresql://localhost:5432/cesizen_test
-          USERNAME_DB: postgres
-          PASSWORD_DB: postgres
+          URL: jdbc:postgresql://localhost:5432/cesizen
+          USERNAME_DB: cesizen
+          PASSWORD_DB: cesizen
           jwt_secret_key: test-secret-key-for-ci
           jwt_secret_reset: test-secret-reset-for-ci
           USERNAME_MAIL: test@example.com
           PASSWORD_MAIL: fake-password
-
-      - name: Afficher rapport surefire
-        if: failure()
-        run: cat /home/runner/work/CESIZen--backend-api/CESIZen--backend-api/target/surefire-reports/com.example.CESIZen.CesiZenApplicationTests.txt
 
       # 📊 SonarQube
       - name: Analyse SonarQube
@@ -76,9 +72,9 @@ jobs:
           docker run -d \
             --network host \
             --name api \
-            -e URL=jdbc:postgresql://localhost:5432/cesizen_test \
-            -e USERNAME_DB=postgres \
-            -e PASSWORD_DB=postgres \
+            -e URL=jdbc:postgresql://localhost:5432/cesizen \
+            -e USERNAME_DB=cesizen \
+            -e PASSWORD_DB=cesizen \
             -e jwt_secret_key=test-secret-key-for-ci \
             -e jwt_secret_reset=test-secret-reset-for-ci \
             -e USERNAME_MAIL=test@example.com \
