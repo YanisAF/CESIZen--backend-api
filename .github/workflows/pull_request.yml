@@ -70,7 +70,7 @@ jobs:
             -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
 
-      # 🐳 Build Docker image de l’API
+      # 🐳 Build Docker image
       - name: Build Docker image
         run: |
           docker build -t cesizen-api:${{ github.sha }} .
