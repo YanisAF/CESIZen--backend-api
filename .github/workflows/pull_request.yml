@@ -65,7 +65,7 @@ jobs:
       - name: Analyse SonarQube
         run: |
           mvn sonar:sonar \
-            -Dsonar.projectKey=CESIZen \
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} \
             -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
             -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
