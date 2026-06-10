@@ -22,6 +22,6 @@ spring:
     password: fake-password
 
 jwt:
-  secret_reset: "ThisIsASuperSecureResetSecretKeyAtLeast32Chars!"
-  secret_key: "a-string-secret-at-least-256-bits-long"
+  secret-reset: "ThisIsASuperSecureResetSecretKeyAtLeast32Chars!"
+  secret-key: "a-string-secret-at-least-256-bits-long"
   expiration-time: 3600000
