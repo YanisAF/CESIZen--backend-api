@@ -4,7 +4,7 @@ on:
   pull_request:
 
 jobs:
-  build-and-test:
+  test-and-build:
     runs-on: ubuntu-latest
 
     # 🐘 DB de test pour Spring Boot
@@ -85,8 +85,8 @@ jobs:
             -e URL=jdbc:postgresql://localhost:5432/cesizen \
             -e USERNAME_DB=cesizen \
             -e PASSWORD_DB=cesizen \
-            -e jwt_secret_key=test-secret-key-for-ci \
-            -e jwt_secret_reset=test-secret-reset-for-ci \
+            -e jwt_secret_key="test-secret-key-for-ci" \
+            -e jwt_secret_reset="test-secret-reset-for-ci" \
             -e USERNAME_MAIL=test@example.com \
             -e PASSWORD_MAIL=fake-password \
             cesizen-api:${{ github.sha }}
