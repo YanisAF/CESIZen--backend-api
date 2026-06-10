@@ -85,8 +85,8 @@ jobs:
             -e URL=jdbc:postgresql://localhost:5432/cesizen \
             -e USERNAME_DB=cesizen \
             -e PASSWORD_DB=cesizen \
-            -e jwt_secret_key="test-secret-key-for-ci" \
-            -e jwt_secret_reset="test-secret-reset-for-ci" \
+            -e jwt_secret_key="this-is-a-very-long-secret-key-for-ci-123!" \
+            -e jwt_secret_reset="another-very-long-secret-reset-key-ci-456!" \
             -e USERNAME_MAIL=test@example.com \
             -e PASSWORD_MAIL=fake-password \
             cesizen-api:${{ github.sha }}
