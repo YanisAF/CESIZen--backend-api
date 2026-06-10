@@ -47,14 +47,14 @@ jobs:
           URL: jdbc:postgresql://localhost:5432/cesizen_test
           USERNAME_DB: postgres
           PASSWORD_DB: postgres
-
-          # JWT
           jwt_secret_key: test-secret-key-for-ci
           jwt_secret_reset: test-secret-reset-for-ci
-
-          # Mail
           USERNAME_MAIL: test@example.com
           PASSWORD_MAIL: fake-password
+
+      - name: Afficher rapport surefire
+        if: failure()
+        run: cat /home/runner/work/CESIZen--backend-api/CESIZen--backend-api/target/surefire-reports/com.example.CESIZen.CesiZenApplicationTests.txt
 
       # 📊 SonarQube
       - name: Analyse SonarQube
