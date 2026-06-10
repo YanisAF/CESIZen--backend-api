@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/cesizen
-    username: cesizen
-    password: cesizen
+    url: jdbc:postgresql://localhost:5432/cesizen_test
+    username: postgres
+    password: postgres
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -18,8 +18,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${USERNAME_MAIL}
-    password: ${PASSWORD_MAIL}
+    username: test@example.com
+    password: fake-password
 
 jwt:
   secret_reset: "ThisIsASuperSecureResetSecretKeyAtLeast32Chars!"
