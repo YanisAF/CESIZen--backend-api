@@ -76,7 +76,7 @@ jobs:
         run: |
           docker build -t cesizen-api:${{ github.sha }} .
 
-      # 🧪 Test container API (smoke test)
+      # 🧪 Test container API
       - name: Run API container
         run: |
           docker run -d \
