@@ -41,7 +41,7 @@ jobs:
 
       # 🧪 Tests + build + coverage
       - name: Build + tests Maven
-        run: mvn clean verify
+        run: mvn clean verify -e
         env:
           # BDD
           URL: jdbc:postgresql://localhost:5432/cesizen_test
