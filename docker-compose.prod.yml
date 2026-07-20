@@ -1,0 +1,62 @@
+# Stack de production - à placer sur le serveur EC2 dans /opt/cesizen/
+# Correspond à l'architecture :
+#   - conteneur API Spring Boot
+#   - reverse proxy Nginx assurant le HTTPS
+#   - certificat Let's Encrypt
+#
+# Utilisation :
+#   IMAGE_NAME et IMAGE_TAG sont lus depuis le fichier .env du serveur
+#   (mis à jour automatiquement par le pipeline CD à chaque déploiement).
+
+services:
+  cesizen-api:
+    image: ${IMAGE_NAME}:${IMAGE_TAG}
+    container_name: cesizen
+    restart: unless-stopped
+    env_file:
+      - .env
+    expose:
+      - "8080"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: cesizen-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/cesizen.conf:/etc/nginx/conf.d/default.conf:ro
+      - certbot-etc:/etc/letsencrypt
+      - certbot-www:/var/www/certbot
+    depends_on:
+      - cesizen-api
+    networks:
+      - app-network
+
+  certbot:
+    image: certbot/certbot
+    container_name: cesizen-certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-www:/var/www/certbot
+    # Renouvellement automatique du certificat toutes les 12h
+    entrypoint: >
+      sh -c "trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot; sleep 12h & wait $${!}; done"
+    networks:
+      - app-network
+
+volumes:
+  certbot-etc:
+  certbot-www:
+
+networks:
+  app-network:
+    driver: bridge
