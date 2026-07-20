@@ -49,7 +49,7 @@ jobs:
           jwt_secret_key: ${{ secrets.JWT_SECRET_KEY }}
           USERNAME_MAIL: ${{ secrets.USERNAME_MAIL }}
           PASSWORD_MAIL: ${{ secrets.PASSWORD_MAIL }}
-          SPRING_PROFILE_ACTIVE: test
+          SPRING_PROFILES_ACTIVE: test
 
       # sauvegarde les rapports
       - name: Upload Surefire Reports
