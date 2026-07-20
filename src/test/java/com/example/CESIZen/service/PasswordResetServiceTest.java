@@ -28,11 +28,16 @@ import static org.mockito.Mockito.*;
 @DisplayName("Tests unitaires - PasswordResetService")
 class PasswordResetServiceTest {
 
-    @Mock private UserRepository userRepository;
-    @Mock private PasswordResetTokenRepository tokenRepository;
-    @Mock private PasswordEncoder passwordEncoder;
-    @Mock private EventService eventService;
-    @Mock private JwtResetTokenService jwtResetTokenService;
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private PasswordResetTokenRepository tokenRepository;
+    @Mock
+    private PasswordEncoder passwordEncoder;
+    @Mock
+    private EventService eventService;
+    @Mock
+    private JwtResetTokenService jwtResetTokenService;
 
     @InjectMocks
     private PasswordResetService passwordResetService;

@@ -12,6 +12,7 @@ import com.example.CESIZen.model.quiz.Question;
 import com.example.CESIZen.model.quiz.Quiz;
 import com.example.CESIZen.repository.QuestionRepository;
 import com.example.CESIZen.repository.QuizRepository;
+import com.example.CESIZen.repository.ResultMessageConfigRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,14 +23,17 @@ import java.util.stream.Collectors;
 public class QuizService {
 
     private final QuizRepository quizRepository;
+    private final ResultMessageConfigRepository resultMessageConfigRepository;
     private final QuestionRepository questionRepository;
 
     public QuizService(
             QuizRepository quizRepository,
-            QuestionRepository questionRepository
+            QuestionRepository questionRepository,
+            ResultMessageConfigRepository resultMessageConfigRepository
     ) {
         this.quizRepository = quizRepository;
         this.questionRepository = questionRepository;
+        this.resultMessageConfigRepository = resultMessageConfigRepository;
     }
 
     public QuizDtoResponse saveQuiz(QuizDtoRequest quizDtoRequest){
@@ -85,6 +89,7 @@ public class QuizService {
     }
 
     public void deleteById(Integer id){
+        resultMessageConfigRepository.deleteAllResultMessageConfigByQuizId(id);
         quizRepository.deleteById(id);
     }
 

@@ -159,7 +159,7 @@ INSERT INTO result_message_config (quiz_id, min_score, max_score, risk_level, me
 (1, 0, 150, 'FAIBLE', 'Votre niveau de stress est faible selon l''échelle Holmes & Rahe.'),
 (1, 151, 299, 'MODERE', 'Votre niveau de stress est modéré, faites attention et prenez des mesures pour gérer votre stress.'),
 (1, 300, 1000, 'ELEVE', 'Votre niveau de stress est élevé. Il est conseillé de consulter un professionnel ou d''adopter des stratégies de gestion du stress.')
-ON CONFLICT DO NOTHING;
+ON CONFLICT (quiz_id, risk_level) DO NOTHING;
 
 -- Quiz 2
 INSERT INTO question (statement, score_value, correct_answer, quiz_id) VALUES
@@ -183,7 +183,7 @@ INSERT INTO result_message_config (quiz_id, min_score, max_score, risk_level, me
 (2, 0, 400, 'FAIBLE', 'Votre bien-être mental semble fragile en ce moment. Il serait bénéfique d''en parler à un professionnel ou à une personne de confiance.'),
 (2, 401, 700, 'MODERE', 'Votre bien-être mental est dans la moyenne. Des axes d''amélioration existent : activité physique, lien social et gestion du stress peuvent encore être renforcés.'),
 (2, 701, 1260, 'ELEVE', 'Votre bien-être mental est élevé. Continuez à entretenir les habitudes positives qui vous permettent de vous épanouir.')
-ON CONFLICT DO NOTHING;
+ON CONFLICT (quiz_id, risk_level) DO NOTHING;
 
 -- Quiz 3
 INSERT INTO question (statement, score_value, correct_answer, quiz_id) VALUES
@@ -214,7 +214,7 @@ INSERT INTO result_message_config (quiz_id, min_score, max_score, risk_level, me
 (3, 0, 400, 'FAIBLE', 'Votre niveau d''anxiété est faible. Quelques symptômes peuvent être présents mais ils n''interfèrent pas significativement avec votre quotidien.'),
 (3, 401, 700, 'MODERE', 'Votre niveau d''anxiété est modéré. Explorer des techniques de gestion du stress et en parler à un professionnel peut vous aider.'),
 (3, 701, 1450, 'ELEVE', 'Votre niveau d''anxiété est élevé. Il est fortement recommandé de consulter un médecin ou un psychologue afin d''obtenir un soutien adapté.')
-ON CONFLICT DO NOTHING;
+ON CONFLICT (quiz_id, risk_level) DO NOTHING;
 
 -- Quiz 4
 INSERT INTO question (statement, score_value, correct_answer, quiz_id) VALUES
@@ -237,7 +237,7 @@ INSERT INTO result_message_config (quiz_id, min_score, max_score, risk_level, me
 (4, 0, 300, 'FAIBLE', 'Votre qualité de sommeil est bonne. Continuez à maintenir des habitudes de sommeil régulières.'),
 (4, 301, 600, 'MODERE', 'Votre qualité de sommeil est altérée. Quelques ajustements de votre hygiène de sommeil pourraient significativement l''améliorer.'),
 (4, 601, 1100, 'ELEVE', 'Votre qualité de sommeil est mauvaise. Il serait utile d''en parler à un médecin pour identifier les causes et trouver des solutions adaptées.')
-ON CONFLICT DO NOTHING;
+ON CONFLICT (quiz_id, risk_level) DO NOTHING;
 
 -- Quiz 5
 INSERT INTO question (statement, score_value, correct_answer, quiz_id) VALUES
@@ -257,7 +257,7 @@ INSERT INTO result_message_config (quiz_id, min_score, max_score, risk_level, me
 (5, 0, 250, 'FAIBLE', 'Votre niveau de stress perçu est faible. Vous semblez gérer efficacement les exigences de votre quotidien.'),
 (5, 251, 500, 'MODERE', 'Votre niveau de stress perçu est modéré. Quelques stratégies de gestion du stress pourraient vous aider à retrouver un meilleur équilibre.'),
 (5, 501, 760, 'ELEVE', 'Votre niveau de stress perçu est élevé. Il est recommandé de consulter un professionnel et d''adopter activement des stratégies de réduction du stress.')
-ON CONFLICT DO NOTHING;
+ON CONFLICT (quiz_id, risk_level) DO NOTHING;
 
 -- Quiz 6
 INSERT INTO question (statement, score_value, correct_answer, quiz_id) VALUES
@@ -279,7 +279,7 @@ INSERT INTO result_message_config (quiz_id, min_score, max_score, risk_level, me
 (6, 0, 300, 'FAIBLE', 'Vous ne présentez pas de signes significatifs d''épuisement étudiant. Votre engagement et votre énergie semblent bien préservés.'),
 (6, 301, 600, 'MODERE', 'Des signes modérés d''épuisement sont présents. Prendre soin de vous, vous accorder des pauses et en parler si besoin est important.'),
 (6, 601, 935, 'ELEVE', 'Vous présentez des signes importants d''épuisement étudiant. Consulter un conseiller ou un médecin est fortement recommandé.')
-ON CONFLICT DO NOTHING;
+ON CONFLICT (quiz_id, risk_level) DO NOTHING;
 
 -- Quiz 7
 INSERT INTO question (statement, score_value, correct_answer, quiz_id) VALUES
@@ -299,7 +299,7 @@ INSERT INTO result_message_config (quiz_id, min_score, max_score, risk_level, me
 (7, 0, 200, 'FAIBLE', 'Vos habitudes alimentaires semblent globalement équilibrées. Continuez à prendre soin de votre alimentation.'),
 (7, 201, 450, 'MODERE', 'Quelques habitudes alimentaires pourraient être améliorées. Des ajustements progressifs peuvent avoir un impact positif sur votre énergie et votre bien-être.'),
 (7, 451, 720, 'ELEVE', 'Vos habitudes alimentaires présentent plusieurs déséquilibres. Un accompagnement par un professionnel de santé ou un diététicien pourrait vous être bénéfique.')
-ON CONFLICT DO NOTHING;
+ON CONFLICT (quiz_id, risk_level) DO NOTHING;
 
 -- Quiz 8
 INSERT INTO question (statement, score_value, correct_answer, quiz_id) VALUES
@@ -318,7 +318,7 @@ INSERT INTO result_message_config (quiz_id, min_score, max_score, risk_level, me
 (8, 0, 200, 'FAIBLE', 'Votre niveau d''activité physique est satisfaisant. Continuez à intégrer le mouvement dans votre quotidien.'),
 (8, 201, 450, 'MODERE', 'Votre niveau d''activité physique est insuffisant. Essayez d''intégrer progressivement plus de mouvement dans vos journées.'),
 (8, 451, 655, 'ELEVE', 'Votre sédentarité est importante. Commencer par de petits objectifs quotidiens (marche, étirements) peut déjà faire une vraie différence pour votre santé.')
-ON CONFLICT DO NOTHING;
+ON CONFLICT (quiz_id, risk_level) DO NOTHING;
 
 -- Quiz 9
 INSERT INTO question (statement, score_value, correct_answer, quiz_id) VALUES
@@ -338,7 +338,7 @@ INSERT INTO result_message_config (quiz_id, min_score, max_score, risk_level, me
 (9, 0, 200, 'FAIBLE', 'Votre réseau de soutien social semble bien établi. Continuez à entretenir ces liens précieux.'),
 (9, 201, 500, 'MODERE', 'Votre lien social est présent mais pourrait être renforcé. Chercher à élargir votre réseau ou à approfondir des relations existantes peut améliorer votre bien-être.'),
 (9, 501, 765, 'ELEVE', 'Des signes d''isolement social important sont présents. En parler à un professionnel ou rejoindre des groupes ou associations peut vous aider à recréer du lien.')
-ON CONFLICT DO NOTHING;
+ON CONFLICT (quiz_id, risk_level) DO NOTHING;
 
 -- Quiz 10
 INSERT INTO question (statement, score_value, correct_answer, quiz_id) VALUES
@@ -358,7 +358,7 @@ INSERT INTO result_message_config (quiz_id, min_score, max_score, risk_level, me
 (10, 0, 200, 'FAIBLE', 'Votre tendance à procrastiner est faible. Vous semblez gérer efficacement vos priorités.'),
 (10, 201, 500, 'MODERE', 'Vous avez une tendance modérée à procrastiner. Des techniques comme la méthode Pomodoro ou la règle des 2 minutes peuvent vous aider.'),
 (10, 501, 755, 'ELEVE', 'Votre procrastination est importante et impacte probablement votre bien-être et vos résultats. Un accompagnement pour en comprendre les causes profondes peut être utile.')
-ON CONFLICT DO NOTHING;
+ON CONFLICT (quiz_id, risk_level) DO NOTHING;
 
 -- Quiz 11
 INSERT INTO question (statement, score_value, correct_answer, quiz_id) VALUES
@@ -378,7 +378,7 @@ INSERT INTO result_message_config (quiz_id, min_score, max_score, risk_level, me
 (11, 0, 200, 'FAIBLE', 'Votre rapport au numérique semble équilibré. Vous utilisez les écrans sans en être dépendant(e).'),
 (11, 201, 500, 'MODERE', 'Votre usage du numérique présente quelques signes préoccupants. Établir des règles claires sur votre temps d''écran peut améliorer votre qualité de vie.'),
 (11, 501, 735, 'ELEVE', 'Votre usage du numérique semble problématique. Une démarche de réduction progressive, voire un soutien professionnel, pourrait vous aider à retrouver un meilleur équilibre.')
-ON CONFLICT DO NOTHING;
+ON CONFLICT (quiz_id, risk_level) DO NOTHING;
 
 -- Quiz 12
 INSERT INTO question (statement, score_value, correct_answer, quiz_id) VALUES
@@ -398,7 +398,7 @@ INSERT INTO result_message_config (quiz_id, min_score, max_score, risk_level, me
 (12, 0, 200, 'FAIBLE', 'Votre estime de vous-même semble satisfaisante. Vous avez globalement une image positive de vous.'),
 (12, 201, 500, 'MODERE', 'Votre estime de vous-même est fragile par moments. Travailler sur la bienveillance envers soi-même peut vous aider à renforcer votre confiance.'),
 (12, 501, 780, 'ELEVE', 'Votre estime de vous-même est basse. Un accompagnement psychologique peut vous aider à développer une image plus juste et plus positive de vous-même.')
-ON CONFLICT DO NOTHING;
+ON CONFLICT (quiz_id, risk_level) DO NOTHING;
 
 -- Quiz 13
 INSERT INTO question (statement, score_value, correct_answer, quiz_id) VALUES
@@ -419,4 +419,4 @@ INSERT INTO result_message_config (quiz_id, min_score, max_score, risk_level, me
 (13, 0, 200, 'FAIBLE', 'Vous semblez avoir une bonne capacité à identifier et réguler vos émotions. Continuez à développer votre intelligence émotionnelle.'),
 (13, 201, 500, 'MODERE', 'Votre gestion des émotions présente quelques difficultés. Des pratiques comme la pleine conscience ou la tenue d''un journal émotionnel peuvent vous aider.'),
 (13, 501, 825, 'ELEVE', 'Vous éprouvez des difficultés importantes à gérer vos émotions. Un accompagnement par un psychologue ou un thérapeute peut vous apporter des outils concrets et efficaces.')
-ON CONFLICT DO NOTHING;
+ON CONFLICT (quiz_id, risk_level) DO NOTHING;
