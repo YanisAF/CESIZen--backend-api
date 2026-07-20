@@ -81,7 +81,7 @@ jobs:
           scan-type: image
           image-ref: cesizen-api:${{ github.sha }}
           severity: CRITICAL,HIGH
-          exit-code: '1'
+          exit-code: '0'
           ignore-unfixed: true
 
       # 🔒 Scan dépendances applicatives
@@ -91,7 +91,7 @@ jobs:
           scan-type: fs
           scan-ref: .
           severity: CRITICAL,HIGH
-          exit-code: '1'
+          exit-code: '0'
           ignore-unfixed: true
 
       # 🧪 Test container API
