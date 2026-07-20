@@ -8,7 +8,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -36,17 +38,19 @@ public class JwtUtils {
 
     private String createToken(Map<String, Object> claims, String username) {
         return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(username)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
-                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .claims(claims)
+                .subject(username)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + expirationTime))
+                .signWith(getSignKey(), Jwts.SIG.HS256)
                 .compact();
     }
 
-    private Key getSignKey() {
-        byte[] keyBytes = secretKey.getBytes();
-        return new SecretKeySpec(keyBytes, SignatureAlgorithm.HS256.getJcaName());
+    private SecretKey getSignKey() {
+        return new SecretKeySpec(
+                secretKey.getBytes(StandardCharsets.UTF_8),
+                "HmacSHA256"
+        );
     }
 
     public Boolean validateToken(String token, UserDetails userDetails){
@@ -72,10 +76,10 @@ public class JwtUtils {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSignKey())
+        return Jwts.parser()
+                .verifyWith(getSignKey())
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }
