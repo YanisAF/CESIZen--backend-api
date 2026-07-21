@@ -1,6 +1,7 @@
 package com.example.CESIZen.configuration;
 
 import com.example.CESIZen.filter.JwtFilter;
+import com.example.CESIZen.filter.RateLimitFilter;
 import com.example.CESIZen.service.authentication.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +27,7 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtUtils jwtUtils;
+    private final RateLimitFilter rateLimitFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -65,6 +67,10 @@ public class SecurityConfig {
                 .addFilterBefore(
                         new JwtFilter(customUserDetailsService, jwtUtils),
                         UsernamePasswordAuthenticationFilter.class
+                )
+                .addFilterBefore(
+                        rateLimitFilter,
+                        JwtFilter.class
                 )
                 .build();
     }
